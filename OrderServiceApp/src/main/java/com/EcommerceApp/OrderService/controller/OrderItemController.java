@@ -1,10 +1,13 @@
 package com.EcommerceApp.OrderService.controller;
 
+import com.EcommerceApp.OrderService.model.Order;
 import com.EcommerceApp.OrderService.model.OrderItem;
 import com.EcommerceApp.OrderService.service.OrderItemService;
+import com.EcommerceApp.OrderService.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -13,11 +16,19 @@ public class OrderItemController {
 
     @Autowired
     private OrderItemService orderItemService;
+    @Autowired
+    private OrderService orderService;
 
 
     // Create a new order item
     @PostMapping
     public OrderItem createOrderItem(@RequestBody OrderItem orderItem) {
+        Order order = orderService.findById(orderItem.getOrderId()).orElse(null);
+        if(order!=null) {
+            order.setTotalAmount(order.getTotalAmount()
+                    .add(orderItem.getItemPrice().multiply(BigDecimal.valueOf(orderItem.getQuantity()))));
+        }
+        orderService.save(order);
         return orderItemService.createOrderItem(orderItem);
     }
 
