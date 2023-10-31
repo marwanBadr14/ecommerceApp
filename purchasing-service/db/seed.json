@@ -1,62 +1,32 @@
 [
   {
-    "orderId": 101,
-    "paymentStatus": "Completed",
-    "paymentMethod": "Credit Card",
-    "paymentAmount": 100.00
+    "productId": 101
   },
   {
-    "orderId": 102,
-    "paymentStatus": "Completed",
-    "paymentMethod": "PayPal",
-    "paymentAmount": 75.50
+    "productId": 102
   },
   {
-    "orderId": 103,
-    "paymentStatus": "Failed",
-    "paymentMethod": "Debit Card",
-    "paymentAmount": 50.20
+    "productId": 103
   },
   {
-    "orderId": 104,
-    "paymentStatus": "Completed",
-    "paymentMethod": "Online Banking",
-    "paymentAmount": 120.75
+    "productId": 104
   },
   {
-    "orderId": 105,
-    "paymentStatus": "Completed",
-    "paymentMethod": "PayPal",
-    "paymentAmount": 90.00
+    "productId": 105
   },
   {
-    "orderId": 106,
-    "paymentStatus": "Pending",
-    "paymentMethod": "Credit Card",
-    "paymentAmount": 60.50
+    "productId": 106
   },
   {
-    "orderId": 107,
-    "paymentStatus": "Completed",
-    "paymentMethod": "Debit Card",
-    "paymentAmount": 180.25
+    "productId": 107
   },
   {
-    "orderId": 108,
-    "paymentStatus": "Failed",
-    "paymentMethod": "Online Banking",
-    "paymentAmount": 30.75
+    "productId": 108
   },
   {
-    "orderId": 109,
-    "paymentStatus": "Completed",
-    "paymentMethod": "Credit Card",
-    "paymentAmount": 95.00
+    "productId": 109
   },
   {
-    "orderId": 110,
-    "paymentStatus": "Completed",
-    "paymentMethod": "PayPal",
-    "paymentAmount": 110.50
+    "productId": 110
   }
 ]
