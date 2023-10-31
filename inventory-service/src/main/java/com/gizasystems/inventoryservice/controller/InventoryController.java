@@ -19,6 +19,11 @@ public class InventoryController {
         return inventoryService.getAllProducts();
     }
 
+    @GetMapping("/all/{category}")
+    public ResponseEntity<List<Product>> getProductByCategory(@PathVariable String categoryName){
+        return inventoryService.getProductByCategory(categoryName);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable Integer id){
         return inventoryService.getProductById(id);

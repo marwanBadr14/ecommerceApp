@@ -39,12 +39,12 @@ public class InventoryService {
         return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
     }
 
-    // Retrieve a specific product by its category
-    public ResponseEntity<List<Product>> getProductByCategory(Category category) {
+    // Retrieve a list of products that belong to the same category
+    public ResponseEntity<List<Product>> getProductByCategory(String categoryName) {
         try{
-            return new ResponseEntity<>(inventoryDao.findByCategory(category.getName()), HttpStatus.OK);
+            return new ResponseEntity<>(inventoryDao.findByCategory(categoryName), HttpStatus.OK);
         }catch (Exception e){
-            System.out.println("Couldn't retrieve products that belong to category "+category.getName());
+            System.out.println("Couldn't retrieve products that belong to category "+categoryName);
             e.printStackTrace();
         }
         return new ResponseEntity<>(new ArrayList<>(),HttpStatus.BAD_REQUEST);
