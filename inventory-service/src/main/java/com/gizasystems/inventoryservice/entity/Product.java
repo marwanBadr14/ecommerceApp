@@ -17,21 +17,28 @@ public class Product {
     @JoinColumn(name = "category_id")
     @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.DETACH,
                         CascadeType.MERGE,CascadeType.REFRESH})
-    private ProductCategory productCategory;
+    private Category category;
     @Column(name = "product_price")
     private double price;
     @Column(name = "product_quantity")
     private Integer quantity;
+    @Column(name = "company_id")
+    private Integer companyId;
 
     public Product() {
     }
 
-    public Product(String name, String description, ProductCategory productCategory, double price, Integer quantity) {
+    public Product(String name, String description, Category category, double price, Integer quantity,Integer companyId) {
         this.name = name;
         this.description = description;
-        this.productCategory = productCategory;
+        this.category = category;
         this.price = price;
         this.quantity = quantity;
+        this.companyId = companyId;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Integer getId() {
@@ -54,12 +61,12 @@ public class Product {
         this.description = description;
     }
 
-    public ProductCategory getProductCategory() {
-        return productCategory;
+    public Category getProductCategory() {
+        return category;
     }
 
-    public void setProductCategory(ProductCategory productCategory) {
-        this.productCategory = productCategory;
+    public void setProductCategory(Category category) {
+        this.category = category;
     }
 
     public double getPrice() {
@@ -76,5 +83,34 @@ public class Product {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public Integer getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Integer companyId) {
+        this.companyId = companyId;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", category=" + category +
+                ", price=" + price +
+                ", quantity=" + quantity +
+                ", companyId=" + companyId +
+                '}';
     }
 }
