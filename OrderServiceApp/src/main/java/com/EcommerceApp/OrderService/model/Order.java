@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -21,9 +21,9 @@ public class Order {
     @Column(name = "customer_id")
     private int customerId;
 
-    @Column(name = "order_date", nullable = false)
+    @Column(name = "order_date")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date orderDate;
+    private LocalDateTime orderDate;
 
     @Column(name = "total_amount", precision = 10, scale = 2)
     private BigDecimal totalAmount;
@@ -34,7 +34,7 @@ public class Order {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<OrderItem> orderItems;
-    public Order(int customerId, Date orderDate, BigDecimal totalAmount, Status orderStatus) {
+    public Order(int customerId, LocalDateTime orderDate, BigDecimal totalAmount, Status orderStatus) {
         this.customerId = customerId;
         this.orderDate = orderDate;
         this.totalAmount = totalAmount;

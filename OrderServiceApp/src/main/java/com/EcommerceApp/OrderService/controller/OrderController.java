@@ -8,6 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +22,9 @@ public class OrderController {
 
     @PostMapping
     public Order createOrder(@RequestBody Order order) {
+        order.setOrderDate(LocalDateTime.now());
+        order.setOrderStatus(Status.Pending);
+        order.setTotalAmount(BigDecimal.ZERO);
         return orderService.save(order);
     }
 
