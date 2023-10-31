@@ -12,5 +12,4 @@ public interface InventoryDao extends JpaRepository<Product,Integer> {
 
     List<Product> findByCategory(String categoryName);
 
-    List<Product> findByCompany(Integer companyId);
 }

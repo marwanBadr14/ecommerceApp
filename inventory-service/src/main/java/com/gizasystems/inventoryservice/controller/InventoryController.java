@@ -18,10 +18,7 @@ public class InventoryController {
     public ResponseEntity<List<Product>> getAllProducts(){
         return inventoryService.getAllProducts();
     }
-    @GetMapping("/all/{companyId}")
-    public ResponseEntity<List<Product>> getAllCompanyProduct(@PathVariable Integer companyId){
-        return inventoryService.getAllCompanyProducts(companyId);
-    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable Integer id){
         return inventoryService.getProductById(id);

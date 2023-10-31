@@ -61,14 +61,13 @@ public class Product {
         this.description = description;
     }
 
-    public Category getProductCategory() {
+    public Category getCategory() {
         return category;
     }
 
-    public void setProductCategory(Category category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
-
     public double getPrice() {
         return price;
     }
@@ -85,21 +84,7 @@ public class Product {
         this.quantity = quantity;
     }
 
-    public Category getCategory() {
-        return category;
-    }
 
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
-    public Integer getCompanyId() {
-        return companyId;
-    }
-
-    public void setCompanyId(Integer companyId) {
-        this.companyId = companyId;
-    }
 
     @Override
     public String toString() {
@@ -110,7 +95,6 @@ public class Product {
                 ", category=" + category +
                 ", price=" + price +
                 ", quantity=" + quantity +
-                ", companyId=" + companyId +
                 '}';
     }
 }

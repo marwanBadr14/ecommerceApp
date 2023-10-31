@@ -1,6 +1,5 @@
 package com.gizasystems.inventoryservice.service;
 
-
 import com.gizasystems.inventoryservice.dao.InventoryDao;
 import com.gizasystems.inventoryservice.entity.Category;
 import com.gizasystems.inventoryservice.entity.Product;
@@ -8,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,18 +28,6 @@ public class InventoryService {
         return new ResponseEntity<>(new ArrayList<>(),HttpStatus.BAD_REQUEST);
     }
 
-    // Retrieve all products of a specific company
-    public ResponseEntity<List<Product>> getAllCompanyProducts(Integer companyId) {
-        try{
-            List<Product> companyProducts = inventoryDao.findByCompany(companyId);
-            return new ResponseEntity<>(companyProducts, HttpStatus.OK);
-        }catch (Exception e){
-            System.out.println("Couldn't retrieve products of company #"+companyId);
-            e.printStackTrace();
-        }
-        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-    }
-
     // Retrieve a specific product by its id
     public ResponseEntity<Product> getProductById(Integer id) {
         try{
@@ -53,7 +39,7 @@ public class InventoryService {
         return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
     }
 
-    // Retrieve a specific product by its id
+    // Retrieve a specific product by its category
     public ResponseEntity<List<Product>> getProductByCategory(Category category) {
         try{
             return new ResponseEntity<>(inventoryDao.findByCategory(category.getName()), HttpStatus.OK);
@@ -84,6 +70,9 @@ public class InventoryService {
                 editedProduct.setId(id);
                 editedProduct.setName(product.getName());
                 editedProduct.setDescription(product.getDescription());
+                editedProduct.setCategory(product.getCategory());
+                editedProduct.setPrice(product.getPrice());
+                editedProduct.setQuantity(product.getQuantity());
                 return new ResponseEntity<>(inventoryDao.save(editedProduct),HttpStatus.OK);
             }
         }catch (Exception e){
