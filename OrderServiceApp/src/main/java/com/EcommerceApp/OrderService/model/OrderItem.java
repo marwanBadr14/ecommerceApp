@@ -1,19 +1,23 @@
 package com.EcommerceApp.OrderService.model;
+import com.EcommerceApp.OrderService.key.OrderItemPK;
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
 
 
 @Entity
 @Table(name = "order_items")
-public class OrderItems {
+@IdClass(OrderItemPK.class) // Specify the composite key class
+@Data
+@EqualsAndHashCode
+public class OrderItem {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id")
     private Integer orderId;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_id")
     private Integer productId;
 
@@ -28,7 +32,7 @@ public class OrderItems {
     @JoinColumn(name = "order_id", referencedColumnName = "order_id", insertable = false, updatable = false)
     private Order order;
 
-    public OrderItems(int orderId, int productId, int quantity, BigDecimal itemPrice, Order order) {
+    public OrderItem(int orderId, int productId, int quantity, BigDecimal itemPrice, Order order) {
         this.orderId = orderId;
         this.productId = productId;
         this.quantity = quantity;
@@ -36,7 +40,7 @@ public class OrderItems {
         this.order = order;
     }
 
-    public OrderItems() {
+    public OrderItem() {
     }
 
     public int getOrderId() {
