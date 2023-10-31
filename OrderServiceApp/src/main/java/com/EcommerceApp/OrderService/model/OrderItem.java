@@ -1,5 +1,6 @@
 package com.EcommerceApp.OrderService.model;
 import com.EcommerceApp.OrderService.key.OrderItemPK;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -29,68 +30,19 @@ public class OrderItem {
 
 
     @ManyToOne
-    @JoinColumn(name = "order_id", referencedColumnName = "order_id", insertable = false, updatable = false)
-    private Order order;
+    @JsonIgnore
+    @JoinColumn(name = "order_id") // This references the "order_id" column in the order_items table
+    private Order order; // This establishes the relationship
 
-    public OrderItem(int orderId, int productId, int quantity, BigDecimal itemPrice, Order order) {
+
+    public OrderItem(int orderId, int productId, int quantity, BigDecimal itemPrice) {
         this.orderId = orderId;
         this.productId = productId;
         this.quantity = quantity;
         this.itemPrice = itemPrice;
-        this.order = order;
     }
 
     public OrderItem() {
     }
 
-    public int getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(int orderId) {
-        this.orderId = orderId;
-    }
-
-    public int getProductId() {
-        return productId;
-    }
-
-    public void setProductId(int productId) {
-        this.productId = productId;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public BigDecimal getItemPrice() {
-        return itemPrice;
-    }
-
-    public void setItemPrice(BigDecimal itemPrice) {
-        this.itemPrice = itemPrice;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
-    }
-
-    @Override
-    public String toString() {
-        return "OrderItems{" +
-                "orderId=" + orderId +
-                ", productId=" + productId +
-                ", quantity=" + quantity +
-                ", itemPrice=" + itemPrice +
-                ", order=" + order +
-                '}';
-    }
 }
