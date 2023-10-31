@@ -1,6 +1,6 @@
 package com.EcommerceApp.OrderService.controller;
 
-import com.EcommerceApp.OrderService.Order;
+import com.EcommerceApp.OrderService.model.Order;
 import com.EcommerceApp.OrderService.Status;
 import com.EcommerceApp.OrderService.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;

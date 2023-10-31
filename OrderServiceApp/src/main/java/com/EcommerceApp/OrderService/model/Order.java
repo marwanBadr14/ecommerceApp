@@ -1,4 +1,5 @@
-package com.EcommerceApp.OrderService;
+package com.EcommerceApp.OrderService.model;
+import com.EcommerceApp.OrderService.Status;
 import jakarta.persistence.*;
 import lombok.Data;
 

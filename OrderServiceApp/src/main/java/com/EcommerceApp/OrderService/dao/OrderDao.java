@@ -1,6 +1,6 @@
 package com.EcommerceApp.OrderService.dao;
 
-import com.EcommerceApp.OrderService.Order;
+import com.EcommerceApp.OrderService.model.Order;
 import com.EcommerceApp.OrderService.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
