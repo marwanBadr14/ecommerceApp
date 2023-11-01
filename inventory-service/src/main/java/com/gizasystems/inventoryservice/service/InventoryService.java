@@ -99,9 +99,11 @@ public class InventoryService {
 
     // Deduct from the stock of a product after purchasing
     public ResponseEntity<Integer> deductFromStock(Integer id, Integer quantity){
+        System.out.println("order");
         try{
             Optional<Product> product = inventoryDao.findById(id);
             if(product.isPresent()){
+                System.out.println("order is found!");
                 Product productFound = product.get();
                 if(productFound.getQuantity()>=quantity)
                 {

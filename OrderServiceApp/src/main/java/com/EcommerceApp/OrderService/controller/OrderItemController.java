@@ -2,6 +2,7 @@ package com.EcommerceApp.OrderService.controller;
 
 import com.EcommerceApp.OrderService.exception.OrderNotFoundException;
 import com.EcommerceApp.OrderService.exception.OrderItemNotFoundException;
+import com.EcommerceApp.OrderService.feign.OrderInterface;
 import com.EcommerceApp.OrderService.model.Order;
 import com.EcommerceApp.OrderService.model.OrderItem;
 import com.EcommerceApp.OrderService.service.OrderItemService;
@@ -24,6 +25,9 @@ public class OrderItemController {
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    OrderInterface orderInterface;
+
     // Create a new order item
     @PostMapping
     public ResponseEntity<OrderItem> createOrderItem(@RequestBody OrderItem orderItem) {
@@ -34,8 +38,9 @@ public class OrderItemController {
             order.setTotalAmount(order.getTotalAmount()
                     .add(orderItem.getItemPrice().multiply(BigDecimal.valueOf(orderItem.getQuantity()))));
             orderService.save(order);
-
+            orderInterface.deductFromStock(orderItem.getProductId(),orderItem.getQuantity());
             OrderItem createdOrderItem = orderItemService.createOrderItem(orderItem);
+
             return new ResponseEntity<>(createdOrderItem, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

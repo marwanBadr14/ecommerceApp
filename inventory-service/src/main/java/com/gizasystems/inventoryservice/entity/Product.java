@@ -22,19 +22,16 @@ public class Product {
     private double price;
     @Column(name = "product_quantity")
     private Integer quantity;
-    @Column(name = "company_id")
-    private Integer companyId;
 
     public Product() {
     }
 
-    public Product(String name, String description, Category category, double price, Integer quantity,Integer companyId) {
+    public Product(String name, String description, Category category, double price, Integer quantity) {
         this.name = name;
         this.description = description;
         this.category = category;
         this.price = price;
         this.quantity = quantity;
-        this.companyId = companyId;
     }
 
     public void setId(Integer id) {
