@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -19,10 +20,16 @@ public class InventoryController {
         return inventoryService.getAllProducts();
     }
 
-    @GetMapping("/all/{category}")
+    @GetMapping("/all/{categoryName}")
     public ResponseEntity<List<Product>> getProductByCategory(@PathVariable String categoryName){
         return inventoryService.getProductByCategory(categoryName);
     }
+
+    @GetMapping("/price/{id}")
+    public ResponseEntity<BigDecimal> getProductPrice(@PathVariable Integer id){
+        return inventoryService.getProductPrice(id);
+    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable Integer id){
@@ -42,6 +49,11 @@ public class InventoryController {
     @DeleteMapping("delete/{id}")
     public ResponseEntity<Product> deleteProductById(@PathVariable Integer id){
         return inventoryService.deleteProductById(id);
+    }
+
+    @PutMapping("/deduct")
+    public ResponseEntity<Integer> deductFromStock(@RequestParam Integer id, @RequestParam Integer quantity){
+        return inventoryService.deductFromStock(id,quantity);
     }
 
 }

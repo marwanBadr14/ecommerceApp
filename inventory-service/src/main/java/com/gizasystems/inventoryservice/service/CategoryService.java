@@ -68,7 +68,7 @@ public class CategoryService {
         return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
     }
 
-    // Delete category by Id
+    // Delete category by id
     public ResponseEntity<Category> deleteCategoryById(Integer id) {
             Optional<Category> category = categoryDao.findById(id);
         try{
