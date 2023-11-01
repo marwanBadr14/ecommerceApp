@@ -1,7 +1,6 @@
 package com.EcommerceApp.OrderService.model;
 import com.EcommerceApp.OrderService.Status;
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
@@ -9,7 +8,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Data
 @EqualsAndHashCode
 @Table(name = "orders")
 public class Order {

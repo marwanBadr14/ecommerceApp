@@ -2,6 +2,8 @@ package com.gizasystems.inventoryservice.entity;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "products")
 public class Product {
@@ -19,14 +21,14 @@ public class Product {
                         CascadeType.MERGE,CascadeType.REFRESH})
     private Category category;
     @Column(name = "product_price")
-    private double price;
+    private BigDecimal price;
     @Column(name = "product_quantity")
     private Integer quantity;
 
     public Product() {
     }
 
-    public Product(String name, String description, Category category, double price, Integer quantity) {
+    public Product(String name, String description, Category category, BigDecimal price, Integer quantity) {
         this.name = name;
         this.description = description;
         this.category = category;
@@ -65,11 +67,11 @@ public class Product {
     public void setCategory(Category category) {
         this.category = category;
     }
-    public double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
@@ -80,8 +82,6 @@ public class Product {
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
-
-
 
     @Override
     public String toString() {

@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -48,6 +50,22 @@ public class InventoryService {
             e.printStackTrace();
         }
         return new ResponseEntity<>(new ArrayList<>(),HttpStatus.BAD_REQUEST);
+    }
+
+    // Retrieve the price of a specific item
+    public ResponseEntity<BigDecimal> getProductPrice(Integer id) {
+        try{
+            Optional<Product> product = inventoryDao.findById(id);
+            if(product.isPresent()){
+                Product productFound = product.get();
+                return new ResponseEntity<>(productFound.getPrice(),HttpStatus.OK);
+            }
+
+        }catch (Exception e){
+            System.out.println("Couldn't find product #"+id);
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 
     // Add a new product
@@ -99,11 +117,9 @@ public class InventoryService {
 
     // Deduct from the stock of a product after purchasing
     public ResponseEntity<Integer> deductFromStock(Integer id, Integer quantity){
-        System.out.println("order");
         try{
             Optional<Product> product = inventoryDao.findById(id);
             if(product.isPresent()){
-                System.out.println("order is found!");
                 Product productFound = product.get();
                 if(productFound.getQuantity()>=quantity)
                 {
@@ -120,6 +136,5 @@ public class InventoryService {
         }
         return new ResponseEntity<>(0, HttpStatus.BAD_REQUEST);
     }
-
 
 }

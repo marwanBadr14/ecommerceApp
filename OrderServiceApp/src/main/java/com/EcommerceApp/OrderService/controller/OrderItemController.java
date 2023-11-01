@@ -32,13 +32,19 @@ public class OrderItemController {
     @PostMapping
     public ResponseEntity<OrderItem> createOrderItem(@RequestBody OrderItem orderItem) {
         try {
+
             Order order = orderService.findById(orderItem.getOrderId())
                     .orElseThrow(() -> new OrderNotFoundException("Order with ID " + orderItem.getOrderId() + " not found"));
 
+            orderItem.setItemPrice(orderInterface.getProductPrice(orderItem.getProductId()).getBody());
+
             order.setTotalAmount(order.getTotalAmount()
                     .add(orderItem.getItemPrice().multiply(BigDecimal.valueOf(orderItem.getQuantity()))));
+
             orderService.save(order);
+
             orderInterface.deductFromStock(orderItem.getProductId(),orderItem.getQuantity());
+
             OrderItem createdOrderItem = orderItemService.createOrderItem(orderItem);
 
             return new ResponseEntity<>(createdOrderItem, HttpStatus.CREATED);
