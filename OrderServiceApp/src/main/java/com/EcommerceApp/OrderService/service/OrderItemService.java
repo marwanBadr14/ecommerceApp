@@ -1,6 +1,6 @@
 package com.EcommerceApp.OrderService.service;
 
-import com.EcommerceApp.OrderService.key.OrderItemPK;
+import com.EcommerceApp.OrderService.dto.OrderItemPK;
 import com.EcommerceApp.OrderService.dao.OrderItemDao;
 import com.EcommerceApp.OrderService.model.OrderItem;
 
