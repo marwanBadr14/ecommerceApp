@@ -31,7 +31,7 @@ public class OrderItem {
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "order_id") // This references the "order_id" column in the order_items table
+//    @JoinColumn(name = "order_id") // This references the "order_id" column in the order_items table
     private Order order; // This establishes the relationship
 
 
