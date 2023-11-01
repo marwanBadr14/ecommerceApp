@@ -1,9 +1,11 @@
 package com.EcommerceApp.OrderService.model;
-import com.EcommerceApp.OrderService.key.OrderItemPK;
+import com.EcommerceApp.OrderService.dto.OrderItemPK;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
@@ -12,6 +14,8 @@ import java.math.BigDecimal;
 @Table(name = "order_items")
 @IdClass(OrderItemPK.class) // Specify the composite key class
 @Data
+@Getter
+@Setter
 @EqualsAndHashCode
 public class OrderItem {
     @Id
@@ -31,7 +35,7 @@ public class OrderItem {
 
     @ManyToOne
     @JsonIgnore
-//    @JoinColumn(name = "order_id") // This references the "order_id" column in the order_items table
+    @JoinColumn(name = "order_id") // This references the "order_id" column in the order_items table
     private Order order; // This establishes the relationship
 
 
@@ -43,45 +47,5 @@ public class OrderItem {
     }
 
     public OrderItem() {
-    }
-
-    public Integer getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(Integer orderId) {
-        this.orderId = orderId;
-    }
-
-    public Integer getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Integer productId) {
-        this.productId = productId;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
-    public BigDecimal getItemPrice() {
-        return itemPrice;
-    }
-
-    public void setItemPrice(BigDecimal itemPrice) {
-        this.itemPrice = itemPrice;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
     }
 }

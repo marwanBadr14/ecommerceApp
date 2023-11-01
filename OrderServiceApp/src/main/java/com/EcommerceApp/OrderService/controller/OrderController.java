@@ -1,8 +1,11 @@
 package com.EcommerceApp.OrderService.controller;
 
+import com.gizasystems.purchasingservice.dto.PurchaseDTO;
 import com.EcommerceApp.OrderService.exception.OrderNotFoundException;
+import com.EcommerceApp.OrderService.feign.PurchaseServiceIClient;
 import com.EcommerceApp.OrderService.model.Order;
 import com.EcommerceApp.OrderService.Status;
+import com.EcommerceApp.OrderService.model.OrderItem;
 import com.EcommerceApp.OrderService.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +27,8 @@ public class OrderController {
     @Autowired
     OrderService orderService;
 
+    @Autowired
+    PurchaseServiceIClient purchaseServiceIClient;
     @PostMapping
     public ResponseEntity<Order> createOrder(@RequestBody Order order) {
         try {
@@ -105,6 +111,21 @@ public class OrderController {
     ) {
         List<Order> orders = orderService.findByOrderDateBetween(startDate, endDate);
         return new ResponseEntity<>(orders, HttpStatus.OK);
+    }
+
+    @GetMapping("/{orderId}/execute")
+    public ResponseEntity<List<OrderItem>> executeOrder(@PathVariable int orderId) {
+        if (orderService.existsById(orderId)) {
+            List<OrderItem> orderItems =  orderService.executeOrder(orderId);
+            List<PurchaseDTO> purchaseDTOS = new ArrayList<>();
+            for (OrderItem item:orderItems) {
+                purchaseDTOS.add(new PurchaseDTO(item.getProductId(), item.getQuantity()));
+            }
+            purchaseServiceIClient.processPurchasesRequest(purchaseDTOS);
+            return new ResponseEntity<>(orderItems, HttpStatus.OK);
+        } else {
+            throw new OrderNotFoundException("Order with ID " + orderId + " not found");
+        }
     }
 
     @ExceptionHandler(OrderNotFoundException.class)
