@@ -1,10 +1,14 @@
 package com.EcommerceApp.OrderService.controller;
 
+import com.EcommerceApp.OrderService.exception.OrderNotFoundException;
+import com.EcommerceApp.OrderService.exception.OrderItemNotFoundException;
 import com.EcommerceApp.OrderService.model.Order;
 import com.EcommerceApp.OrderService.model.OrderItem;
 import com.EcommerceApp.OrderService.service.OrderItemService;
 import com.EcommerceApp.OrderService.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -16,41 +20,74 @@ public class OrderItemController {
 
     @Autowired
     private OrderItemService orderItemService;
+
     @Autowired
     private OrderService orderService;
 
-
     // Create a new order item
     @PostMapping
-    public OrderItem createOrderItem(@RequestBody OrderItem orderItem) {
-        Order order = orderService.findById(orderItem.getOrderId()).orElse(null);
-        if(order!=null) {
+    public ResponseEntity<OrderItem> createOrderItem(@RequestBody OrderItem orderItem) {
+        try {
+            Order order = orderService.findById(orderItem.getOrderId())
+                    .orElseThrow(() -> new OrderNotFoundException("Order with ID " + orderItem.getOrderId() + " not found"));
+
             order.setTotalAmount(order.getTotalAmount()
                     .add(orderItem.getItemPrice().multiply(BigDecimal.valueOf(orderItem.getQuantity()))));
+            orderService.save(order);
+
+            OrderItem createdOrderItem = orderItemService.createOrderItem(orderItem);
+            return new ResponseEntity<>(createdOrderItem, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        orderService.save(order);
-        return orderItemService.createOrderItem(orderItem);
     }
 
     @GetMapping("/{orderId}")
-    public List<OrderItem> getOrderItems(@PathVariable Integer orderId) {
-        return orderItemService.findByOrderId(orderId);
+    public ResponseEntity<List<OrderItem>> getOrderItems(@PathVariable Integer orderId) {
+        List<OrderItem> orderItems = orderItemService.findByOrderId(orderId);
+        return new ResponseEntity<>(orderItems, HttpStatus.OK);
     }
 
     @GetMapping("/{orderId}/{productId}")
-    public OrderItem getOrderItem(@PathVariable Integer orderId, @PathVariable Integer productId) {
-        return orderItemService.getOrderItemById(orderId, productId);
+    public ResponseEntity<OrderItem> getOrderItem(@PathVariable Integer orderId, @PathVariable Integer productId) {
+        OrderItem orderItem = orderItemService.getOrderItemById(orderId, productId);
+        if (orderItem == null) {
+            throw new OrderItemNotFoundException("Order item with Order ID " + orderId + " and Product ID " + productId + " not found");
+        }
+        return new ResponseEntity<>(orderItem, HttpStatus.OK);
     }
 
     // Update an order item
     @PutMapping("/{orderId}/{productId}")
-    public OrderItem updateOrderItem(@PathVariable Integer orderId,@PathVariable Integer productId, @RequestBody OrderItem orderItem) {
-        return orderItemService.updateOrderItem(orderId, productId, orderItem);
+    public ResponseEntity<OrderItem> updateOrderItem(@PathVariable Integer orderId, @PathVariable Integer productId, @RequestBody OrderItem orderItem) {
+        try {
+            OrderItem updatedOrderItem = orderItemService.updateOrderItem(orderId, productId, orderItem);
+            return new ResponseEntity<>(updatedOrderItem, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     // Delete an order item by ID
     @DeleteMapping("/{orderId}/{productId}")
-    public void deleteOrderItem(@PathVariable Integer orderId, @PathVariable Integer productId) {
-        orderItemService.deleteOrderItem(orderId, productId);
+    public ResponseEntity<String> deleteOrderItem(@PathVariable Integer orderId, @PathVariable Integer productId) {
+        try {
+            orderItemService.deleteOrderItem(orderId, productId);
+            return new ResponseEntity<>("Order item deleted successfully", HttpStatus.NO_CONTENT);
+        } catch (OrderItemNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An error occurred while deleting the order item", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ResponseEntity<String> handleOrderNotFoundException(OrderNotFoundException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(OrderItemNotFoundException.class)
+    public ResponseEntity<String> handleOrderItemNotFoundException(OrderItemNotFoundException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 }

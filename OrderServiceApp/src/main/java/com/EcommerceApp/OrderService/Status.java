@@ -1,7 +1,7 @@
 package com.EcommerceApp.OrderService;
 
 public enum Status {
-Pending,
+    Pending,
     Shipped,
     Processing,
     Delivered,

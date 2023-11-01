@@ -49,4 +49,8 @@ public class OrderService {
     public List<Order> findByOrderDateBetween(Date startDate, Date endDate) {
         return orderDao.findByOrderDateBetween(startDate,endDate);
     }
+
+    public boolean existsById(int orderId) {
+        return orderDao.existsById(orderId);
+    }
 }
