@@ -35,4 +35,8 @@ public class Purchase {
     public void setNumOfPurchases(Integer numOfPurchases) {
         this.numOfPurchases = numOfPurchases;
     }
+
+    public void increaseNumOfPurchases(Integer addNumOfPurchases) {
+        this.numOfPurchases = getNumOfPurchases() + addNumOfPurchases;
+    }
 }

@@ -1,6 +1,7 @@
 package com.gizasystems.purchasingservice.dto;
 
 public record PurchaseDTO(
-        Integer productId
+        Integer productId,
+        Integer quantity
 ) {
 }

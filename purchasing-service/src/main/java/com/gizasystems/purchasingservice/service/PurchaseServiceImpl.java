@@ -31,6 +31,7 @@ public class PurchaseServiceImpl implements PurchaseService {
         try {
             return new ResponseEntity<>(purchaseRepository.findById(id).orElseThrow(), HttpStatus.OK);
         } catch (Exception e){
+            System.out.println("PurchaseServiceImpl.findById");
             return new ResponseEntity<>(new Purchase(), HttpStatus.BAD_REQUEST);
         }
     }
@@ -41,6 +42,7 @@ public class PurchaseServiceImpl implements PurchaseService {
             Purchase savedPurchase = purchaseRepository.save(purchase);
             return new ResponseEntity<>(savedPurchase, HttpStatus.CREATED);
         } catch (Exception e){
+            System.out.println("PurchaseServiceImpl.add");
             return new ResponseEntity<>(new Purchase(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -51,6 +53,7 @@ public class PurchaseServiceImpl implements PurchaseService {
             Purchase savedPurchase = purchaseRepository.save(purchase);
             return new ResponseEntity<>(savedPurchase, HttpStatus.OK);
         } catch (Exception e){
+            System.out.println("PurchaseServiceImpl.update");
             return new ResponseEntity<>(new Purchase(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
