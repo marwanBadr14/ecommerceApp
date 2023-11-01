@@ -3,13 +3,12 @@ package com.EcommerceApp.OrderService.service;
 import com.EcommerceApp.OrderService.model.Order;
 import com.EcommerceApp.OrderService.Status;
 import com.EcommerceApp.OrderService.dao.OrderDao;
+import com.EcommerceApp.OrderService.model.OrderItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class OrderService {
@@ -49,4 +48,18 @@ public class OrderService {
     public List<Order> findByOrderDateBetween(Date startDate, Date endDate) {
         return orderDao.findByOrderDateBetween(startDate,endDate);
     }
+
+    public boolean existsById(int orderId) {
+        return orderDao.existsById(orderId);
+    }
+
+    public List<OrderItem> executeOrder(int orderId) {
+        Optional<Order> orderOptional = orderDao.findById(orderId);
+        if (orderOptional.isPresent()) {
+            return orderOptional.get().getOrderItems();
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
 }

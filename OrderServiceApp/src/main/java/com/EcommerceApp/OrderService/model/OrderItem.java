@@ -1,9 +1,11 @@
 package com.EcommerceApp.OrderService.model;
-import com.EcommerceApp.OrderService.key.OrderItemPK;
+import com.EcommerceApp.OrderService.dto.OrderItemPK;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
@@ -12,6 +14,8 @@ import java.math.BigDecimal;
 @Table(name = "order_items")
 @IdClass(OrderItemPK.class) // Specify the composite key class
 @Data
+@Getter
+@Setter
 @EqualsAndHashCode
 public class OrderItem {
     @Id
@@ -44,5 +48,4 @@ public class OrderItem {
 
     public OrderItem() {
     }
-
 }
