@@ -6,37 +6,41 @@ import java.util.List;
 
 @Entity
 @Table(name = "product_categories")
-public class ProductCategory {
+public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "category_id")
-    private Integer CategoryId;
+    private Integer id;
     @Column(name = "category_name")
-    private String categoryName;
+    private String name;
     @OneToMany(mappedBy = "productCategory",
     cascade = {CascadeType.PERSIST,CascadeType.DETACH,
                 CascadeType.MERGE,CascadeType.REFRESH})
     private List<Product> products;
 
-    public ProductCategory() {
+    public Category() {
     }
 
-    public ProductCategory(String categoryName, List<Product> products) {
-        this.categoryName = categoryName;
+    public Category(String name, List<Product> products) {
+        this.name = name;
         this.products = products;
     }
 
-    public Integer getCategoryId() {
-        return CategoryId;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public String getCategoryName() {
-        return categoryName;
+    public Integer getId() {
+        return id;
     }
 
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public List<Product> getProducts() {
@@ -45,5 +49,14 @@ public class ProductCategory {
 
     public void setProducts(List<Product> products) {
         this.products = products;
+    }
+
+    @Override
+    public String toString() {
+        return "Category{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", products=" + products +
+                '}';
     }
 }
