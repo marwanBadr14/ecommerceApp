@@ -58,7 +58,7 @@ public class CategoryService {
                 Category category = cat.get();
                 category.setId(id);
                 category.setName(productCategory.getName());
-                category.setProducts(productCategory.getProducts());
+                category.setProductsId(productCategory.getProductsId());
                 return new ResponseEntity<>(categoryDao.save(category),HttpStatus.OK);
             }
         }catch (Exception e){

@@ -16,10 +16,12 @@ public class Product {
     private String name;
     @Column(name = "product_description")
     private String description;
-    @JoinColumn(name = "category_id")
-    @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.DETACH,
-                        CascadeType.MERGE,CascadeType.REFRESH})
-    private Category category;
+//    @JoinColumn(name = "category_id")
+//    @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.DETACH,
+//                        CascadeType.MERGE,CascadeType.REFRESH})
+//    private Category category;
+    @Column(name = "category_id")
+    private Integer categoryId;
     @Column(name = "product_price")
     private BigDecimal price;
     @Column(name = "product_quantity")
@@ -28,10 +30,10 @@ public class Product {
     public Product() {
     }
 
-    public Product(String name, String description, Category category, BigDecimal price, Integer quantity) {
+    public Product(String name, String description, Integer categoryId, BigDecimal price, Integer quantity) {
         this.name = name;
         this.description = description;
-        this.category = category;
+        this.categoryId = categoryId;
         this.price = price;
         this.quantity = quantity;
     }
@@ -60,13 +62,23 @@ public class Product {
         this.description = description;
     }
 
-    public Category getCategory() {
-        return category;
+//    public Category getCategory() {
+//        return category;
+//    }
+//
+//    public void setCategory(Category category) {
+//        this.category = category;
+//    }
+
+
+    public Integer getCategoryId() {
+        return categoryId;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
     }
+
     public BigDecimal getPrice() {
         return price;
     }
@@ -89,7 +101,7 @@ public class Product {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", category=" + category +
+ //               ", category=" + category +
                 ", price=" + price +
                 ", quantity=" + quantity +
                 '}';

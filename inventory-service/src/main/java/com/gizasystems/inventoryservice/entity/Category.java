@@ -14,17 +14,20 @@ public class Category {
     private Integer id;
     @Column(name = "category_name")
     private String name;
-    @OneToMany(mappedBy = "category",
-    cascade = {CascadeType.PERSIST,CascadeType.DETACH,
-                CascadeType.MERGE,CascadeType.REFRESH})
-    private List<Product> products;
+//    @OneToMany(mappedBy = "category",
+//    cascade = {CascadeType.PERSIST,CascadeType.DETACH,
+//                CascadeType.MERGE,CascadeType.REFRESH})
+//    @JsonIgnore
+
+    @ElementCollection
+    private List<Integer> productsId;
 
     public Category() {
     }
 
-    public Category(String name, List<Product> products) {
+    public Category(String name, List<Integer> productsId) {
         this.name = name;
-        this.products = products;
+        this.productsId = productsId;
     }
 
     public void setId(Integer id) {
@@ -43,12 +46,12 @@ public class Category {
         this.name = name;
     }
 
-    public List<Product> getProducts() {
-        return products;
+    public List<Integer> getProductsId() {
+        return productsId;
     }
 
-    public void setProducts(List<Product> products) {
-        this.products = products;
+    public void setProductsId(List<Integer> productsId) {
+        this.productsId = productsId;
     }
 
     @Override
@@ -56,7 +59,7 @@ public class Category {
         return "Category{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", products=" + products +
+                ", products=" + productsId +
                 '}';
     }
 }

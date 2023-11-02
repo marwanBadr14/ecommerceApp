@@ -20,36 +20,11 @@ public class InventoryController {
         return inventoryService.getAllProducts();
     }
 
-    @GetMapping("/all/{categoryName}")
+    @GetMapping("/categories/{categoryName}")
     public ResponseEntity<List<Product>> getProductByCategory(@PathVariable String categoryName){
         return inventoryService.getProductByCategory(categoryName);
     }
 
-    @GetMapping("/price/{id}")
-    public ResponseEntity<BigDecimal> getProductPrice(@PathVariable Integer id){
-        return inventoryService.getProductPrice(id);
-    }
-
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable Integer id){
-        return inventoryService.getProductById(id);
-    }
-
-    @PostMapping("/add")
-    public ResponseEntity<Product> addProduct(@RequestBody Product product){
-        return inventoryService.addProduct(product);
-    }
-
-    @PutMapping("/edit/{id}")
-    public ResponseEntity<Product> editProductCategory(@PathVariable Integer id, @RequestBody Product product){
-        return inventoryService.editProductById(id,product);
-    }
-
-    @DeleteMapping("delete/{id}")
-    public ResponseEntity<Product> deleteProductById(@PathVariable Integer id){
-        return inventoryService.deleteProductById(id);
-    }
 
     @PutMapping("/deduct")
     public ResponseEntity<Integer> deductFromStock(@RequestParam Integer id, @RequestParam Integer quantity){
