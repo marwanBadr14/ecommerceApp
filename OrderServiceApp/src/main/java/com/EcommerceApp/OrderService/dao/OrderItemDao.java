@@ -1,6 +1,6 @@
 package com.EcommerceApp.OrderService.dao;
 
-import com.EcommerceApp.OrderService.key.OrderItemPK;
+import com.EcommerceApp.OrderService.dto.OrderItemPK;
 import com.EcommerceApp.OrderService.model.OrderItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 
