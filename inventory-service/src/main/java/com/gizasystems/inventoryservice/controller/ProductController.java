@@ -25,6 +25,11 @@ public class ProductController {
         return productService.getProductPrice(id);
     }
 
+    @GetMapping("/name/{id}")
+    public ResponseEntity<String> getProductName(@PathVariable Integer id){
+        return productService.getProductName(id);
+    }
+
     @PostMapping("/add")
     public ResponseEntity<Product> addProduct(@RequestBody Product product){
         return productService.addProduct(product);

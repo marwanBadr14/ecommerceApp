@@ -49,6 +49,21 @@ public class ProductService {
         return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 
+    public ResponseEntity<String> getProductName(Integer id) {
+        try{
+            Optional<Product> product = productDao.findById(id);
+            if(product.isPresent()){
+                Product productFound = product.get();
+                return new ResponseEntity<>(productFound.getName(), HttpStatus.OK);
+            }
+
+        }catch (Exception e){
+            System.out.println("Couldn't find product #"+id);
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+    }
+
     // Add a new product
     public ResponseEntity<Product> addProduct(Product product) {
         try{
@@ -105,5 +120,6 @@ public class ProductService {
         }
         return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
+
 
 }

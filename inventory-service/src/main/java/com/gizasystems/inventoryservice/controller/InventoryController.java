@@ -25,7 +25,6 @@ public class InventoryController {
         return inventoryService.getProductByCategory(categoryName);
     }
 
-
     @PutMapping("/deduct")
     public ResponseEntity<Integer> deductFromStock(@RequestParam Integer id, @RequestParam Integer quantity){
         return inventoryService.deductFromStock(id,quantity);

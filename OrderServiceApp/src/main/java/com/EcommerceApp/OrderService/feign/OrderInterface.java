@@ -15,6 +15,9 @@ public interface OrderInterface {
     @PutMapping("/inventory/deduct")
     public ResponseEntity<Integer> deductFromStock(@RequestParam Integer id, @RequestParam Integer quantity);
 
-    @GetMapping("/inventory/price/{id}")
+    @GetMapping("/products/price/{id}")
     public ResponseEntity<BigDecimal> getProductPrice(@PathVariable Integer id);
+
+    @GetMapping("/products/name/{id}")
+    public ResponseEntity<String> getProductName(@PathVariable Integer id);
 }
