@@ -7,6 +7,9 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -24,8 +27,8 @@ public class SecurityConfig {
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/v1/**")
-                .permitAll()
+//                .requestMatchers("/api/v1/**").permitAll()
+                .requestMatchers("/auth/register", "/auth/token", "/auth/validate").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
@@ -37,4 +40,5 @@ public class SecurityConfig {
 
         return http.build();
     }
+
 }

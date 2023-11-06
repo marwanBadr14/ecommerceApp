@@ -42,7 +42,7 @@ public class SignupService {
         Map<String, Object> claims = userMapConvertor.convertUserToMap(user);
 
         // generates an encoded JWT token for the created user with extra claims
-        var jwtToken = jwtService.generateToken(claims, user);
+        var jwtToken = jwtService.generateToken(claims, user.getUsername());
 
         // generates an encoded JWT token for the created user with no extra claims
         //var jwtToken = jwtService.generateToken(user);

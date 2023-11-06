@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@RequestMapping("/purchase")
 public class PurchaseController {
     PurchaseService purchaseService;
 
@@ -18,6 +19,10 @@ public class PurchaseController {
         this.purchaseService = purchaseService;
     }
 
+    @GetMapping("/")
+    public String sayHello() {
+        return "Hello world!";
+    }
 
 
     @PostMapping("/increase-purchases")
