@@ -30,16 +30,6 @@ public class InventoryService {
         return new ResponseEntity<>(new ArrayList<>(),HttpStatus.BAD_REQUEST);
     }
 
-    // Retrieve a specific product by its id
-    public ResponseEntity<Product> getProductById(Integer id) {
-        try{
-            return new ResponseEntity<>(inventoryDao.findById(id).get(), HttpStatus.OK);
-        }catch (Exception e){
-            System.out.println("Couldn't retrieve product #"+id);
-            e.printStackTrace();
-        }
-        return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
-    }
 
     // Retrieve a list of products that belong to the same category
     public ResponseEntity<List<Product>> getProductByCategory(String categoryName) {
@@ -52,68 +42,6 @@ public class InventoryService {
         return new ResponseEntity<>(new ArrayList<>(),HttpStatus.BAD_REQUEST);
     }
 
-    // Retrieve the price of a specific item
-    public ResponseEntity<BigDecimal> getProductPrice(Integer id) {
-        try{
-            Optional<Product> product = inventoryDao.findById(id);
-            if(product.isPresent()){
-                Product productFound = product.get();
-                return new ResponseEntity<>(productFound.getPrice(),HttpStatus.OK);
-            }
-
-        }catch (Exception e){
-            System.out.println("Couldn't find product #"+id);
-            e.printStackTrace();
-        }
-        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-    }
-
-    // Add a new product
-    public ResponseEntity<Product> addProduct(Product product) {
-        try{
-            return new ResponseEntity<>(inventoryDao.save(product),HttpStatus.CREATED);
-        }catch (Exception e){
-            System.out.println("Couldn't add product "+product.getName());
-            e.printStackTrace();
-        }
-        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-    }
-
-    // Edit an already existing product
-    public ResponseEntity<Product> editProductById(Integer id, Product product) {
-        try {
-            Optional<Product> prod = inventoryDao.findById(id);
-            if(prod.isPresent()){
-                Product editedProduct = prod.get();
-                editedProduct.setId(id);
-                editedProduct.setName(product.getName());
-                editedProduct.setDescription(product.getDescription());
-                editedProduct.setCategory(product.getCategory());
-                editedProduct.setPrice(product.getPrice());
-                editedProduct.setQuantity(product.getQuantity());
-                return new ResponseEntity<>(inventoryDao.save(editedProduct),HttpStatus.OK);
-            }
-        }catch (Exception e){
-            System.out.println("Couldn't edit product #"+id);
-            e.printStackTrace();
-        }
-        return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
-    }
-
-    // Delete products by id
-    public ResponseEntity<Product> deleteProductById(Integer id) {
-        try{
-            Optional<Product> product = inventoryDao.findById(id);
-            if(product.isPresent()){
-                inventoryDao.deleteById(id);
-                return new ResponseEntity<>(null,HttpStatus.OK);
-            }
-        }catch (Exception e){
-            System.out.println("Couldn't delete product #"+id);
-            e.printStackTrace();
-        }
-        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-    }
 
     // Deduct from the stock of a product after purchasing
     public ResponseEntity<Integer> deductFromStock(Integer id, Integer quantity){

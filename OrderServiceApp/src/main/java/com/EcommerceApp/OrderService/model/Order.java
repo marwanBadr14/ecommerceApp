@@ -90,6 +90,15 @@ public class Order {
         this.orderItems = orderItems;
     }
 
-    public void setCustomer(int i) {
+    @Override
+    public String toString() {
+        return "Order{" +
+                "orderId=" + orderId +
+                ", customerId=" + customerId +
+                ", orderDate=" + orderDate +
+                ", totalAmount=" + totalAmount +
+                ", orderStatus=" + orderStatus +
+                ", orderItems=" + orderItems +
+                '}';
     }
 }
