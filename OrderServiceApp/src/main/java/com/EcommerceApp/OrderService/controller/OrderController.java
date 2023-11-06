@@ -1,5 +1,6 @@
 package com.EcommerceApp.OrderService.controller;
 
+import com.EcommerceApp.OrderService.kafka.OrderProducer;
 import com.gizasystems.purchasingservice.dto.PurchaseDTO;
 import com.EcommerceApp.OrderService.exception.OrderNotFoundException;
 import com.EcommerceApp.OrderService.feign.PurchaseServiceIClient;
@@ -26,9 +27,11 @@ public class OrderController {
 
     @Autowired
     OrderService orderService;
-
     @Autowired
     PurchaseServiceIClient purchaseServiceIClient;
+    @Autowired
+    OrderProducer orderProducer;
+
     @PostMapping
     public ResponseEntity<Order> createOrder(@RequestBody Order order) {
         try {
@@ -36,6 +39,8 @@ public class OrderController {
             order.setOrderStatus(Status.Pending);
             order.setTotalAmount(BigDecimal.ZERO);
             Order createdOrder = orderService.save(order);
+
+            orderProducer.sendMessage(order);
             return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

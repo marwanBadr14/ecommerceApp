@@ -53,13 +53,15 @@ public class CategoryService {
     // Edit an already existing category
     public ResponseEntity<Category> editCategoryById(Integer id, Category productCategory) {
         try {
-            Optional<Category> cat = categoryDao.findById(id);
-            if(cat.isPresent()){
-                Category category = cat.get();
-                category.setId(id);
-                category.setName(productCategory.getName());
-                category.setProductsId(productCategory.getProductsId());
-                return new ResponseEntity<>(categoryDao.save(category),HttpStatus.OK);
+            Optional<Category> category = categoryDao.findById(id);
+            if(category.isPresent()){
+                Category editedCategory = category.get();
+                editedCategory.setId(id);
+                if (productCategory.getName()!=null)
+                    editedCategory.setName(productCategory.getName());
+                if(productCategory.getProductsId()!=null)
+                    editedCategory.setProductsId(productCategory.getProductsId());
+                return new ResponseEntity<>(categoryDao.save(editedCategory),HttpStatus.OK);
             }
         }catch (Exception e){
             System.out.println("Couldn't edit category with id: "+id);
