@@ -41,7 +41,7 @@ public class OrderControllerTest {
     public void setUp() {
         testOrder = new Order();
         testOrder.setOrderId(1);
-        testOrder.setCustomer(108);
+        testOrder.setCustomerId(108);
         testOrder.setOrderDate(LocalDateTime.now());
         testOrder.setTotalAmount(BigDecimal.valueOf(149.99));
         testOrder.setOrderStatus(Status.Pending);
