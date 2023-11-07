@@ -11,12 +11,14 @@ spring:
           uri: lb://PURCHASING-SERVICE
           predicates:
             - Path=/purchase/**
-#          filters:
-#            - AuthenticationFilter
+          filters:
+            - AuthenticationFilter
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
-              - Path=/auth/**
+              - Path=/api/v1/**
+          filters:
+            - AuthenticationFilter
 eureka:
   client:
     service-url:

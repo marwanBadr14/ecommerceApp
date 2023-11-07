@@ -1,6 +1,7 @@
 package com.marwan.UserService.service;
 
 import com.marwan.UserService.helper.UserMapConvertor;
+import com.marwan.UserService.repository.Role;
 import com.marwan.UserService.repository.User;
 import com.marwan.UserService.repository.UserRepository;
 import com.marwan.UserService.reqres.AuthenticationResponse;
@@ -32,7 +33,7 @@ public class SignupService {
                 .lastName(request.getLastName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(request.getRole())
+                .role(Role.CUSTOMER)
                 .build();
 
         // adds user to database
