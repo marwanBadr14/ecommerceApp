@@ -21,7 +21,7 @@ public class LoginService {
 
     private final AuthenticationManager manager;
 
-    private final UserMapConvertor userMapConvertor = new UserMapConvertor();
+    private final UserMapConvertor userMapConvertor;
 
 
 

@@ -1,5 +1,6 @@
 package com.marwan.apigateway.util;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -18,10 +19,26 @@ public class JwtUtil {
         Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token);
     }
 
+//    public boolean isManager(String jwtToken) {
+//        try {
+//
+//            Claims claims = extractAllClaims(jwtToken);
+//
+//            // Check if the "role" claim is equal to "MANAGER"
+//            String roleClaim = (String) claims.get("role");
+//            return "CUSTOMER".equals(roleClaim);
+//        } catch (Exception e) {
+//            // Handle token parsing or validation errors
+//            System.out.println("Fe haga ghalat fe is manager!!!!!!!!!!!!!!!!!!!!!!!!");
+//            return false;
+//        }
+//    }
+
 
 
     private Key getSignKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET);
         return Keys.hmacShaKeyFor(keyBytes);
     }
+
 }

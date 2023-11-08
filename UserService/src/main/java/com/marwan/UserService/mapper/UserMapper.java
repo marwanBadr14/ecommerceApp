@@ -2,7 +2,9 @@ package com.marwan.UserService.mapper;
 
 import com.marwan.UserService.dto.UserDTO;
 import com.marwan.UserService.repository.User;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UserMapper {
 
     public UserDTO userEntityToDto(User user){

@@ -7,8 +7,7 @@ import com.marwan.UserService.repository.UserRepository;
 import com.marwan.UserService.reqres.AuthenticationResponse;
 import com.marwan.UserService.reqres.RegisterRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +22,8 @@ public class SignupService {
 
     private final JwtService jwtService;
 
-    private UserMapConvertor userMapConvertor = new UserMapConvertor();
+    @Autowired
+    private UserMapConvertor userMapConvertor;
 
     public Object register(RegisterRequest request) throws IllegalAccessException {
 

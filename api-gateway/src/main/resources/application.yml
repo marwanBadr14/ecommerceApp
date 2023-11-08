@@ -16,7 +16,7 @@ spring:
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
-              - Path=/api/v1/**
+              - Path=/user/**
           filters:
             - AuthenticationFilter
 eureka:
