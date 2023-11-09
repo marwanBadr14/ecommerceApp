@@ -19,21 +19,14 @@ public class JwtUtil {
         Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token);
     }
 
-//    public boolean isManager(String jwtToken) {
-//        try {
-//
-//            Claims claims = extractAllClaims(jwtToken);
-//
-//            // Check if the "role" claim is equal to "MANAGER"
-//            String roleClaim = (String) claims.get("role");
-//            return "CUSTOMER".equals(roleClaim);
-//        } catch (Exception e) {
-//            // Handle token parsing or validation errors
-//            System.out.println("Fe haga ghalat fe is manager!!!!!!!!!!!!!!!!!!!!!!!!");
-//            return false;
-//        }
-//    }
-
+    public Claims extractAllClaims(String token){
+        return Jwts
+                .parserBuilder()
+                .setSigningKey(getSignKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
 
 
     private Key getSignKey() {
