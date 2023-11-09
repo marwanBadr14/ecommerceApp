@@ -24,7 +24,7 @@ public class UserController {
         return ResponseEntity.ok("Admin was added successfully");
     }
 
-    @PostMapping("/get-user-email-by-id")
+    @GetMapping("/get-user-email-by-id")
     public ResponseEntity<String> getUserEmailById(@RequestParam("id") Integer id) {
         String userEmail = userService.getUserEmailById(id);
 
