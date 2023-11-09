@@ -1,4 +1,4 @@
-package com.gizasystems.inventoryservice.entity;
+package com.gizasystems.inventoryservice.model;
 
 import jakarta.persistence.*;
 
@@ -16,26 +16,26 @@ public class Product {
     private String name;
     @Column(name = "product_description")
     private String description;
-//    @JoinColumn(name = "category_id")
-//    @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.DETACH,
-//                        CascadeType.MERGE,CascadeType.REFRESH})
-//    private Category category;
     @Column(name = "category_id")
     private Integer categoryId;
     @Column(name = "product_price")
     private BigDecimal price;
     @Column(name = "product_quantity")
     private Integer quantity;
+    @Column(name = "product_image")
+    private String imageUrl;
 
     public Product() {
     }
 
-    public Product(String name, String description, Integer categoryId, BigDecimal price, Integer quantity) {
+    public Product(Integer id, String name, String description, Integer categoryId, BigDecimal price, Integer quantity, String imageUrl) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.categoryId = categoryId;
         this.price = price;
         this.quantity = quantity;
+        this.imageUrl = imageUrl;
     }
 
     public void setId(Integer id) {
@@ -62,15 +62,6 @@ public class Product {
         this.description = description;
     }
 
-//    public Category getCategory() {
-//        return category;
-//    }
-//
-//    public void setCategory(Category category) {
-//        this.category = category;
-//    }
-
-
     public Integer getCategoryId() {
         return categoryId;
     }
@@ -95,15 +86,24 @@ public class Product {
         this.quantity = quantity;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     @Override
     public String toString() {
         return "Product{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
- //               ", category=" + category +
+                ", categoryId=" + categoryId +
                 ", price=" + price +
                 ", quantity=" + quantity +
+                ", imageUrl='" + imageUrl + '\'' +
                 '}';
     }
 }

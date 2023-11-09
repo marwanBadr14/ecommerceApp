@@ -95,10 +95,10 @@ public class Order {
         return "Order{" +
                 "orderId=" + orderId +
                 ", customerId=" + customerId +
-                ", orderDate=" + orderDate +
+            //    ", orderDate=" + orderDate +
                 ", totalAmount=" + totalAmount +
                 ", orderStatus=" + orderStatus +
-                ", orderItems=" + orderItems +
+            //    ", orderItems=" + orderItems +
                 '}';
     }
 }

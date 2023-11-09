@@ -1,14 +1,11 @@
 package com.gizasystems.inventoryservice.service;
 
 import com.gizasystems.inventoryservice.dao.InventoryDao;
-import com.gizasystems.inventoryservice.entity.Category;
-import com.gizasystems.inventoryservice.entity.Product;
+import com.gizasystems.inventoryservice.exception.ApiRequestException;
+import com.gizasystems.inventoryservice.model.Product;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,31 +17,27 @@ public class InventoryService {
     InventoryDao inventoryDao;
 
     // Retrieve all products in the inventory
-    public ResponseEntity<List<Product>> getAllProducts() {
+    public List<Product> getAllProducts() {
         try{
-            return new ResponseEntity<>(inventoryDao.findAll(), HttpStatus.OK);
+            return inventoryDao.findAll();
         }catch (Exception e){
-            System.out.println("Couldn't retrieve all products");
-            e.printStackTrace();
+            throw new ApiRequestException("Couldn't retrieve all products");
         }
-        return new ResponseEntity<>(new ArrayList<>(),HttpStatus.BAD_REQUEST);
     }
 
 
     // Retrieve a list of products that belong to the same category
-    public ResponseEntity<List<Product>> getProductByCategory(String categoryName) {
+    public List<Product> getProductByCategory(String categoryName) {
         try{
-            return new ResponseEntity<>(inventoryDao.findByCategory(categoryName), HttpStatus.OK);
+            return inventoryDao.findByCategory(categoryName);
         }catch (Exception e){
-            System.out.println("Couldn't retrieve products that belong to category "+categoryName);
-            e.printStackTrace();
+            throw new ApiRequestException("Couldn't retrieve products that belong to category "+categoryName);
         }
-        return new ResponseEntity<>(new ArrayList<>(),HttpStatus.BAD_REQUEST);
     }
 
 
     // Deduct from the stock of a product after purchasing
-    public ResponseEntity<Integer> deductFromStock(Integer id, Integer quantity){
+    public void deductFromStock(Integer id, Integer quantity){
         try{
             Optional<Product> product = inventoryDao.findById(id);
             if(product.isPresent()){
@@ -54,15 +47,13 @@ public class InventoryService {
                     int newQuantity = productFound.getQuantity()-quantity;
                     productFound.setQuantity(newQuantity);
                     inventoryDao.save(productFound);
-                    return new ResponseEntity<>(1,HttpStatus.OK);
-                }
+                }else
+                    throw new ApiRequestException("Quantity requested from product #"+id+" is more than the quantity" +
+                            "present in the stock");
             }
-            return new ResponseEntity<>(0,HttpStatus.OK);
         }catch (Exception e){
-            System.out.println("Couldn't deduct from product #"+id);
-            e.printStackTrace();
+            throw new ApiRequestException("Couldn't deduct from product #"+id);
         }
-        return new ResponseEntity<>(0, HttpStatus.BAD_REQUEST);
     }
 
 }

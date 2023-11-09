@@ -1,9 +1,9 @@
 package com.gizasystems.inventoryservice.service;
 import com.gizasystems.inventoryservice.dao.CategoryDao;
-import com.gizasystems.inventoryservice.entity.Category;
+import com.gizasystems.inventoryservice.dto.CategoryDto;
+import com.gizasystems.inventoryservice.exception.ApiRequestException;
+import com.gizasystems.inventoryservice.model.Category;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,71 +17,66 @@ public class CategoryService {
 
 
     // Retrieve a list of all categories
-    public ResponseEntity<List<Category>> getAllCategories() {
-        try{
-            return new ResponseEntity<>(categoryDao.findAll(), HttpStatus.OK);
+    public List<Category> getAllCategories() {
+        try {
+            return categoryDao.findAll();
         }catch (Exception e){
-            System.out.println("Couldn't retrieve all categories");
-            e.printStackTrace();
+            throw new RuntimeException("Couldn't retrieve all categories");
         }
-        return new ResponseEntity<>(new ArrayList<>(),HttpStatus.BAD_REQUEST);
     }
 
 
     // Retrieve a specific category by its id
-    public ResponseEntity<Category> getCategoryById(Integer id) {
+    public Category getCategoryById(Integer id) {
+        Optional<Category> category = categoryDao.findById(id);
         try{
-            return new ResponseEntity<>(categoryDao.findById(id).get(), HttpStatus.OK);
+            if (category.isPresent())
+                return category.get();
+            throw new ApiRequestException("Couldn't find a category with "+id);
         }catch (Exception e){
-            System.out.println("Couldn't retrieve category with id: "+id);
-            e.printStackTrace();
+            throw new ApiRequestException("Couldn't retrieve category #"+id);
         }
-        return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
     }
 
     // Add a new category
-    public ResponseEntity<Category> addCategory(Category category) {
+    public Category addCategory(CategoryDto categoryDto) {
         try{
-            return new ResponseEntity<>(categoryDao.save(category),HttpStatus.CREATED);
+            Category category = new Category();
+            category.setName(categoryDto.getName());
+            return categoryDao.save(category);
         }catch (Exception e){
-            System.out.println("Couldn't add category "+ category.getName());
-            e.printStackTrace();
+            throw new ApiRequestException("Couldn't add a new category");
         }
-        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 
     // Edit an already existing category
-    public ResponseEntity<Category> editCategoryById(Integer id, Category productCategory) {
+    public Category editCategoryById(Integer id, CategoryDto categoryDto) {
         try {
             Optional<Category> category = categoryDao.findById(id);
-            if(category.isPresent()){
+            if (category.isPresent()) {
                 Category editedCategory = category.get();
                 editedCategory.setId(id);
-                if (productCategory.getName()!=null)
-                    editedCategory.setName(productCategory.getName());
-                if(productCategory.getProductsId()!=null)
-                    editedCategory.setProductsId(productCategory.getProductsId());
-                return new ResponseEntity<>(categoryDao.save(editedCategory),HttpStatus.OK);
+                if (categoryDto.getName() != null)
+                    editedCategory.setName(categoryDto.getName());
+                return categoryDao.save(editedCategory);
             }
-        }catch (Exception e){
-            System.out.println("Couldn't edit category with id: "+id);
-            e.printStackTrace();
+            throw new ApiRequestException("Couldn't find a category with "+id);
         }
-        return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+           catch (Exception e){
+                throw new ApiRequestException("Couldn't edit category #"+id);
+        }
     }
 
     // Delete category by id
-    public ResponseEntity<Category> deleteCategoryById(Integer id) {
-            Optional<Category> category = categoryDao.findById(id);
+    public void deleteCategoryById(Integer id) {
         try{
+            Optional<Category> category = categoryDao.findById(id);
             if(category.isPresent()){
                 categoryDao.deleteById(id);
-                return new ResponseEntity<>(null,HttpStatus.OK);
             }
+            throw new ApiRequestException("Couldn't find a category with "+id);
         }catch (Exception e){
-            System.out.println("Couldn't delete category "+category.get().getName());
-            e.printStackTrace();
+            throw new ApiRequestException("Couldn't delete category #"+id);
         }
-        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 }

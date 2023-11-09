@@ -1,4 +1,4 @@
-package com.gizasystems.inventoryservice.entity;
+package com.gizasystems.inventoryservice.model;
 
 import jakarta.persistence.*;
 
@@ -14,11 +14,6 @@ public class Category {
     private Integer id;
     @Column(name = "category_name")
     private String name;
-//    @OneToMany(mappedBy = "category",
-//    cascade = {CascadeType.PERSIST,CascadeType.DETACH,
-//                CascadeType.MERGE,CascadeType.REFRESH})
-//    @JsonIgnore
-
     @ElementCollection
     private List<Integer> productsId;
 

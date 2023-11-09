@@ -39,8 +39,6 @@ public class OrderController {
             order.setOrderStatus(Status.Pending);
             order.setTotalAmount(BigDecimal.ZERO);
             Order createdOrder = orderService.save(order);
-
-            orderProducer.sendMessage(order);
             return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -121,12 +119,14 @@ public class OrderController {
     @GetMapping("/{orderId}/execute")
     public ResponseEntity<List<OrderItem>> executeOrder(@PathVariable int orderId) {
         if (orderService.existsById(orderId)) {
+            Order order = orderService.findById(orderId).get();
             List<OrderItem> orderItems =  orderService.executeOrder(orderId);
             List<PurchaseDTO> purchaseDTOS = new ArrayList<>();
             for (OrderItem item:orderItems) {
                 purchaseDTOS.add(new PurchaseDTO(item.getProductId(), item.getQuantity()));
             }
-            purchaseServiceIClient.processPurchasesRequest(purchaseDTOS);
+            //purchaseServiceIClient.processPurchasesRequest(purchaseDTOS);
+            orderProducer.sendMessage(order);
             return new ResponseEntity<>(orderItems, HttpStatus.OK);
         } else {
             throw new OrderNotFoundException("Order with ID " + orderId + " not found");
