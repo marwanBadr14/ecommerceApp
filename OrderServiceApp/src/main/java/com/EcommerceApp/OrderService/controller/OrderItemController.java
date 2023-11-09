@@ -36,7 +36,7 @@ public class OrderItemController {
             Order order = orderService.findById(orderItem.getOrderId())
                     .orElseThrow(() -> new OrderNotFoundException("Order with ID " + orderItem.getOrderId() + " not found"));
 
-            orderItem.setItemPrice(inventoryServiceClient.getProductPrice(orderItem.getProductId()).getBody());
+            orderItem.setItemPrice(inventoryServiceClient.getProductPrice(orderItem.getProductId()));
 
             order.setTotalAmount(order.getTotalAmount()
                     .add(orderItem.getItemPrice().multiply(BigDecimal.valueOf(orderItem.getQuantity()))));

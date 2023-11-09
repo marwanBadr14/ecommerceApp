@@ -13,11 +13,12 @@ import java.util.List;
 @FeignClient("INVENTORY-SERVICE")
 public interface InventoryServiceClient {
     @PutMapping("/inventory/deduct")
-    ResponseEntity<Integer> deductFromStock(@RequestParam Integer id, @RequestParam Integer quantity);
+    public void deductFromStock(@RequestParam Integer id, @RequestParam Integer quantity);
 
-    @GetMapping("/inventory/price/{id}")
-    ResponseEntity<BigDecimal> getProductPrice(@PathVariable Integer id);
+    @GetMapping("/products/price/{id}")
+    public BigDecimal getProductPrice(@PathVariable Integer id);
 
-    @PostMapping("/increase-purchases")
-    ResponseEntity<List<Purchase>> processPurchasesRequest(@RequestBody List<PurchaseDTO> purchaseDTOs);
+    @GetMapping("/products/name/{id}")
+    public String getProductName(@PathVariable Integer id);
+
 }
