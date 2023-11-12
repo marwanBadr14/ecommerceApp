@@ -1,12 +1,17 @@
 package com.gizasystems.purchasingservice.model;
 
+import com.gizasystems.purchasingservice.dto.PurchaseDTO;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "purchase")
 public class Purchase {
     @Id
-    @Column(name = "product_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private  Integer id;
+
+    @Column(name = "product_id", unique = true)
     private Integer productId;
 
     @Column(name = "num_of_purchases")
@@ -18,6 +23,14 @@ public class Purchase {
     public Purchase(Integer productId, Integer numOfPurchases) {
         this.productId = productId;
         this.numOfPurchases = numOfPurchases;
+    }
+
+    public static Purchase from(PurchaseDTO purchaseDTO) {
+        return new Purchase(purchaseDTO.productId(), purchaseDTO.quantity());
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     public Integer getProductId() {
