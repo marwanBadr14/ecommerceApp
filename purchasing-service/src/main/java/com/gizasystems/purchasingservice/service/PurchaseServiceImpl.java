@@ -1,57 +1,59 @@
 package com.gizasystems.purchasingservice.service;
 
 import com.gizasystems.purchasingservice.dao.PurchaseRepository;
+import com.gizasystems.purchasingservice.dto.PurchaseDTO;
+import com.gizasystems.purchasingservice.exception.PurchaseNotFoundException;
 import com.gizasystems.purchasingservice.model.Purchase;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class PurchaseServiceImpl implements PurchaseService {
-    PurchaseRepository purchaseRepository;
+    private final PurchaseRepository purchaseRepository;
 
-    public PurchaseServiceImpl(PurchaseRepository purchaseRepository) {
-        this.purchaseRepository = purchaseRepository;
+    @Override
+    public List<PurchaseDTO> findAll() {
+        List<PurchaseDTO> purchaseDTOS =  PurchaseDTO.from(purchaseRepository.findAll());
+        if (purchaseDTOS == null)
+            throw new PurchaseNotFoundException("No purchases found");
+        return purchaseDTOS;
     }
 
     @Override
-    public ResponseEntity<List<Purchase>> findAll() {
-        try {
-            return new ResponseEntity<>(purchaseRepository.findAll(), HttpStatus.OK);
-        } catch (Exception e){
-            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public PurchaseDTO findByProductId(Integer productId) {
+        PurchaseDTO purchaseDTO = PurchaseDTO.from(purchaseRepository.findByProductId(productId));
+        if (purchaseDTO == null)
+            throw new PurchaseNotFoundException("No purchase found with productId: " + productId);
+        return purchaseDTO;
     }
 
     @Override
-    public ResponseEntity<Purchase> findById(Integer id) {
-        try {
-            return new ResponseEntity<>(purchaseRepository.findById(id).orElseThrow(), HttpStatus.OK);
-        } catch (Exception e){
-            return new ResponseEntity<>(new Purchase(), HttpStatus.BAD_REQUEST);
-        }
+    public PurchaseDTO add(PurchaseDTO purchaseDTO) {
+        Purchase savedPurchase = purchaseRepository.save(Purchase.from(purchaseDTO));
+        return PurchaseDTO.from(savedPurchase);
+    }
+    @Override
+    public PurchaseDTO update(PurchaseDTO purchaseDTO) {
+        Purchase dbPurchase = purchaseRepository.findByProductId(purchaseDTO.productId());
+        if (dbPurchase == null)
+            throw new PurchaseNotFoundException("No purchase found with productId: " + purchaseDTO.productId());
+        return update(purchaseDTO, dbPurchase);
+    }
+    public PurchaseDTO update(PurchaseDTO purchaseDTO, Purchase dbPurchase) {
+        dbPurchase.increaseNumOfPurchases(purchaseDTO.quantity());
+        Purchase savedPurchase = purchaseRepository.save(dbPurchase);
+        return PurchaseDTO.from(savedPurchase);
     }
 
     @Override
-    public ResponseEntity<Purchase> add(Purchase purchase) {
-        try {
-            Purchase savedPurchase = purchaseRepository.save(purchase);
-            return new ResponseEntity<>(savedPurchase, HttpStatus.CREATED);
-        } catch (Exception e){
-            return new ResponseEntity<>(new Purchase(), HttpStatus.INTERNAL_SERVER_ERROR);
+    public PurchaseDTO addOrUpdate(PurchaseDTO purchaseDTO) {
+        Purchase dbPurchase = purchaseRepository.findByProductId(purchaseDTO.productId());
+        if (dbPurchase == null) {
+            return add(purchaseDTO);
         }
-    }
-
-    @Override
-    public ResponseEntity<Purchase> update(Purchase purchase) {
-        try {
-            Purchase savedPurchase = purchaseRepository.save(purchase);
-            return new ResponseEntity<>(savedPurchase, HttpStatus.OK);
-        } catch (Exception e){
-            return new ResponseEntity<>(new Purchase(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return update(purchaseDTO, dbPurchase);
     }
 }
