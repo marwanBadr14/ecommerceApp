@@ -2,7 +2,9 @@ package com.gizasystems.purchasingservice.model;
 
 import com.gizasystems.purchasingservice.dto.PurchaseDTO;
 import jakarta.persistence.*;
+import lombok.Getter;
 
+@Getter
 @Entity
 @Table(name = "purchase")
 public class Purchase {
@@ -29,20 +31,8 @@ public class Purchase {
         return new Purchase(purchaseDTO.productId(), purchaseDTO.quantity());
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public Integer getProductId() {
-        return productId;
-    }
-
     public void setProductId(Integer productId) {
         this.productId = productId;
-    }
-
-    public Integer getNumOfPurchases() {
-        return numOfPurchases;
     }
 
     public void setNumOfPurchases(Integer numOfPurchases) {

@@ -2,10 +2,9 @@ package com.gizasystems.purchasingservice.rest;
 
 import com.gizasystems.purchasingservice.dto.PurchaseDTO;
 import com.gizasystems.purchasingservice.exception.PurchaseNotFoundException;
-import com.gizasystems.purchasingservice.model.Purchase;
 import com.gizasystems.purchasingservice.service.PurchaseService;
 import jakarta.validation.Valid;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -20,12 +19,9 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/purchases")
 @Validated
+@RequiredArgsConstructor
 public class PurchaseController {
-    PurchaseService purchaseService;
-
-    public PurchaseController(PurchaseService purchaseService) {
-        this.purchaseService = purchaseService;
-    }
+    private final PurchaseService purchaseService;
 
     @PostMapping("/increase-purchases")
     public ResponseEntity<List<PurchaseDTO>> processPurchasesRequest(@RequestBody List<PurchaseDTO> purchaseDTOs) {

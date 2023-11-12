@@ -4,18 +4,15 @@ import com.gizasystems.purchasingservice.dao.PurchaseRepository;
 import com.gizasystems.purchasingservice.dto.PurchaseDTO;
 import com.gizasystems.purchasingservice.exception.PurchaseNotFoundException;
 import com.gizasystems.purchasingservice.model.Purchase;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class PurchaseServiceImpl implements PurchaseService {
-    PurchaseRepository purchaseRepository;
-
-    public PurchaseServiceImpl(PurchaseRepository purchaseRepository) {
-        this.purchaseRepository = purchaseRepository;
-    }
+    private final PurchaseRepository purchaseRepository;
 
     @Override
     public List<PurchaseDTO> findAll() {
