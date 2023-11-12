@@ -47,6 +47,6 @@ public class OrderConsumer {
     groupId = "${spring.kafka.consumer.group-id}")
     public void consume(Order order){
         LOGGER.info(String.format("Order is received => %s", order.toString()));
-        service.sendEmail(userServiceInterface.getUserEmailById(order.getCustomerId()), createEmail(order));
+        service.sendEmail(userServiceInterface.getUserEmailById(order.getCustomerId()).getBody(), createEmail(order));
     }
 }
