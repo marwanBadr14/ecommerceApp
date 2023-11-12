@@ -1,10 +1,9 @@
 package com.gizasystems.inventoryservice.controller;
 
 import com.gizasystems.inventoryservice.dto.CategoryDto;
-import com.gizasystems.inventoryservice.model.Category;
 import com.gizasystems.inventoryservice.service.CategoryService;
-//import jakarta.ws.rs.Path;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,23 +15,23 @@ public class CategoryController {
     @Autowired
     CategoryService categoryService;
     @GetMapping("/all")
-    public List<Category> getAllCategories(){
-        return categoryService.getAllCategories();
+    public ResponseEntity<List<CategoryDto>> getAllCategories(){
+            return ResponseEntity.ok(categoryService.getAllCategories());
     }
 
     @GetMapping("/{id}")
-    public Category getCategoryById(@PathVariable Integer id){
-        return categoryService.getCategoryById(id);
+    public ResponseEntity<CategoryDto> getCategoryById(@PathVariable Integer id){
+        return ResponseEntity.ok(categoryService.getCategoryById(id));
     }
 
     @PostMapping("/add")
-    public Category addProductCategory(@RequestBody CategoryDto categoryDto){
-        return categoryService.addCategory(categoryDto);
+    public ResponseEntity<CategoryDto> addProductCategory(@RequestBody CategoryDto categoryDto){
+        return ResponseEntity.ok(categoryService.addCategory(categoryDto));
     }
 
     @PutMapping("/edit/{id}")
-    public Category editProductCategory(@PathVariable Integer id, @RequestBody CategoryDto categoryDto){
-        return categoryService.editCategoryById(id, categoryDto);
+    public ResponseEntity<CategoryDto> editProductCategory(@PathVariable Integer id, @RequestBody CategoryDto categoryDto){
+        return ResponseEntity.ok(categoryService.editCategoryById(id, categoryDto));
     }
 
     @DeleteMapping("delete/{id}")
