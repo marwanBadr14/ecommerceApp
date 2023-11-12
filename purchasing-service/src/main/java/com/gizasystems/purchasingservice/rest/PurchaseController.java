@@ -11,19 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/purchase")
+@RequestMapping("/purchases")
 public class PurchaseController {
     PurchaseService purchaseService;
 
     public PurchaseController(PurchaseService purchaseService) {
         this.purchaseService = purchaseService;
     }
-
-    @GetMapping("/")
-    public String sayHello() {
-        return "Hello world!";
-    }
-
 
     @PostMapping("/increase-purchases")
     public ResponseEntity<List<Purchase>> processPurchasesRequest(@RequestBody List<PurchaseDTO> purchaseDTOs) {
@@ -64,12 +58,12 @@ public class PurchaseController {
         }
     }
 
-    @GetMapping("/purchases")
+    @GetMapping
     public ResponseEntity<List<Purchase>> getAllPurchases() {
         return purchaseService.findAll();
     }
 
-    @GetMapping("/purchases/{productId}")
+    @GetMapping("/{productId}")
     public ResponseEntity<Purchase> getPurchaseByProductId(@PathVariable Integer productId) {
         return purchaseService.findById(productId);
     }

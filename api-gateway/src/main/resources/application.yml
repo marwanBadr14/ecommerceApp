@@ -10,9 +10,38 @@ spring:
         - id: purchasing-service
           uri: lb://PURCHASING-SERVICE
           predicates:
-            - Path=/purchase/**
+            - Path=/purchases/**
           filters:
             - AuthenticationFilter
+
+        - id: inventory-service-inventory
+          uri: lb://INVENTORY-SERVICE
+          predicates:
+            - Path=/inventory/**
+          filters:
+            - AuthenticationFilter
+
+        - id: inventory-service-categories
+          uri: lb://INVENTORY-SERVICE
+          predicates:
+            - Path=/categories/**
+          filters:
+            - AuthenticationFilter
+
+        - id: inventory-service-products
+          uri: lb://INVENTORY-SERVICE
+          predicates:
+            - Path=/products/**
+          filters:
+            - AuthenticationFilter
+
+        - id: order-service
+          uri: lb://ORDER-SERVICE
+          predicates:
+            - Path=/order/**
+          filters:
+            - AuthenticationFilter
+
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
