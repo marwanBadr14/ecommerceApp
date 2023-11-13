@@ -8,10 +8,10 @@ import java.util.stream.Collectors;
 
 @Component
 public class OrderMapper {
-    private static OrderItemMapper orderItemMapper;
+    private OrderItemMapper orderItemMapper;
 
 
-    public static OrderDTO orderToOrderDTO(Order order) {
+    public OrderDTO convertToDTO(Order order) {
         return OrderDTO.builder()
                 .orderId(order.getOrderId())
                 .customerId(order.getCustomerId())
@@ -24,7 +24,7 @@ public class OrderMapper {
                 .build();
     }
 
-    public static Order orderDTOToOrder(OrderDTO orderDTO) {
+    public Order convertToEntity(OrderDTO orderDTO) {
         Order order = new Order();
         order.setOrderId(orderDTO.getOrderId());
         order.setCustomerId(orderDTO.getCustomerId());

@@ -1,5 +1,10 @@
 package com.EcommerceApp.OrderService.controller;
 
+import com.EcommerceApp.OrderService.dto.OrderDTO;
+import com.EcommerceApp.OrderService.dto.OrderItemDTO;
+import com.EcommerceApp.OrderService.exception.InvalidCustomerIdException;
+import com.EcommerceApp.OrderService.exception.InvalidDateRangeException;
+import com.EcommerceApp.OrderService.exception.InvalidOrderIdException;
 import com.EcommerceApp.OrderService.kafka.OrderProducer;
 import com.gizasystems.purchasingservice.dto.PurchaseDTO;
 import com.EcommerceApp.OrderService.exception.OrderNotFoundException;
@@ -33,9 +38,9 @@ public class OrderController {
     OrderProducer orderProducer;
 
     @PostMapping
-    public ResponseEntity<Order> createOrder(@RequestBody Order order) {
+    public ResponseEntity<OrderDTO> createOrder(@RequestBody Order order) {
         try {
-            Order createdOrder = orderService.save(order);
+            OrderDTO createdOrder = orderService.save(order);
             return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -44,9 +49,9 @@ public class OrderController {
 
     // Get a list of all orders
     @GetMapping
-    public ResponseEntity<List<Order>> getAllOrders() {
+    public ResponseEntity<List<OrderDTO>> getAllOrders() {
         try {
-            List<Order> orders = orderService.findAll();
+            List<OrderDTO> orders = orderService.findAll();
             return new ResponseEntity<>(orders, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -55,24 +60,31 @@ public class OrderController {
 
     // Get a specific order by ID
     @GetMapping("/{orderId}")
-    public ResponseEntity<Order> getOrderById(@PathVariable int orderId) {
+    public ResponseEntity<OrderDTO> getOrderById(@PathVariable int orderId) {
         try{
-            Optional<Order> order = orderService.findById(orderId);
-            return new ResponseEntity<>(order.get(), HttpStatus.OK);
-        } catch (Exception e) {
+            OrderDTO order = orderService.findById(orderId);
+            return new ResponseEntity<>(order, HttpStatus.OK);
+        } catch (InvalidOrderIdException e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }catch (OrderNotFoundException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     // Update an existing order
     @PutMapping("/{orderId}")
-    public ResponseEntity<Order> updateOrder(@PathVariable int orderId, @RequestBody Order updatedOrder) {
+    public ResponseEntity<OrderDTO> updateOrder(@PathVariable int orderId, @RequestBody Order updatedOrder) {
         try{
-            Optional<Order> order = orderService.findById(orderId);
-            Order updated = orderService.save(updatedOrder);
+            OrderDTO updated = orderService.update(orderId,updatedOrder);
             return new ResponseEntity<>(updated, HttpStatus.OK);
         }
-        catch (Exception e) {
+        catch (InvalidOrderIdException e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }catch (OrderNotFoundException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -81,63 +93,78 @@ public class OrderController {
     // Delete an order by ID
     @DeleteMapping("/{orderId}")
     public ResponseEntity<Void> deleteOrder(@PathVariable int orderId) {
-        if (orderService.existsById(orderId)) {
+        try {
             orderService.deleteById(orderId);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            throw new OrderNotFoundException("Order with ID " + orderId + " not found");
+        } catch (OrderNotFoundException e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping("/customer/{customerId}")
-    public ResponseEntity<List<Order>> getOrdersByCustomerId(@PathVariable int customerId) {
-        List<Order> orders = orderService.findByCustomerId(customerId);
-        return new ResponseEntity<>(orders, HttpStatus.OK);
+    public ResponseEntity<List<OrderDTO>> getOrdersByCustomerId(@PathVariable int customerId) {
+        try {
+            List<OrderDTO> orders = orderService.findByCustomerId(customerId);
+            return new ResponseEntity<>(orders, HttpStatus.OK);
+        }catch (InvalidCustomerIdException e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     // Get orders by order status
     @GetMapping("/status/{orderStatus}")
-    public ResponseEntity<List<Order>> getOrdersByStatus(@PathVariable Status orderStatus) {
-        List<Order> orders = orderService.findByOrderStatus(orderStatus);
-        return new ResponseEntity<>(orders, HttpStatus.OK);
+    public ResponseEntity<List<OrderDTO>> getOrdersByStatus(@PathVariable Status orderStatus) {
+        try {
+            List<OrderDTO> orders = orderService.findByOrderStatus(orderStatus);
+            return new ResponseEntity<>(orders, HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     // Get orders with a total amount greater than a specified value
     @GetMapping("/totalAmountGreaterThan/{amount}")
-    public ResponseEntity<List<Order>> getOrdersWithTotalAmountGreaterThan(@PathVariable BigDecimal amount) {
-        List<Order> orders = orderService.findByTotalAmountGreaterThan(amount);
-        return new ResponseEntity<>(orders, HttpStatus.OK);
+    public ResponseEntity<List<OrderDTO>> getOrdersWithTotalAmountGreaterThan(@PathVariable BigDecimal amount) {
+        try {
+            List<OrderDTO> orders = orderService.findByTotalAmountGreaterThan(amount);
+            return new ResponseEntity<>(orders, HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     // Get orders within a date range
     @GetMapping("/dateRange")
-    public ResponseEntity<List<Order>> getOrdersWithinDateRange(
+    public ResponseEntity<List<OrderDTO>> getOrdersWithinDateRange(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate
     ) {
-        List<Order> orders = orderService.findByOrderDateBetween(startDate, endDate);
-        return new ResponseEntity<>(orders, HttpStatus.OK);
-    }
-
-    @GetMapping("/{orderId}/execute")
-    public ResponseEntity<List<OrderItem>> executeOrder(@PathVariable int orderId) {
-        if (orderService.existsById(orderId)) {
-            Order order = orderService.findById(orderId).get();
-            List<OrderItem> orderItems =  orderService.executeOrder(orderId);
-            List<PurchaseDTO> purchaseDTOS = new ArrayList<>();
-            for (OrderItem item:orderItems) {
-                purchaseDTOS.add(new PurchaseDTO(item.getProductId(), item.getQuantity()));
-            }
-            purchaseServiceIClient.processPurchasesRequest(purchaseDTOS);
-            orderProducer.sendMessage(order);
-            return new ResponseEntity<>(orderItems, HttpStatus.OK);
-        } else {
-            throw new OrderNotFoundException("Order with ID " + orderId + " not found");
+        try {
+            List<OrderDTO> orders = orderService.findByOrderDateBetween(startDate, endDate);
+            return new ResponseEntity<>(orders, HttpStatus.OK);
+        }catch (InvalidDateRangeException e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @ExceptionHandler(OrderNotFoundException.class)
-    public ResponseEntity<String> handleOrderNotFoundException(OrderNotFoundException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    @GetMapping("/{orderId}/execute")
+    public ResponseEntity<List<OrderItemDTO>> executeOrder(@PathVariable int orderId) {
+        try{
+            List<OrderItemDTO> orderItemDTOS =  orderService.executeOrder(orderId);
+            return new ResponseEntity<>(orderItemDTOS, HttpStatus.OK);
+        }catch (InvalidOrderIdException e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }catch (OrderNotFoundException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
+
 }
