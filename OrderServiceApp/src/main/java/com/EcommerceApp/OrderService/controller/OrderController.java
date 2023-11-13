@@ -125,7 +125,7 @@ public class OrderController {
             for (OrderItem item:orderItems) {
                 purchaseDTOS.add(new PurchaseDTO(item.getProductId(), item.getQuantity()));
             }
-            //purchaseServiceIClient.processPurchasesRequest(purchaseDTOS);
+            purchaseServiceIClient.processPurchasesRequest(purchaseDTOS);
             orderProducer.sendMessage(order);
             return new ResponseEntity<>(orderItems, HttpStatus.OK);
         } else {
