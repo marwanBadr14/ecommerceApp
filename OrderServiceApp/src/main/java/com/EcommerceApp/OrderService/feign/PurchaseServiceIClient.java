@@ -13,6 +13,6 @@ import java.util.List;
 @FeignClient("PURCHASING-SERVICE")
 
 public interface PurchaseServiceIClient {
-    @PostMapping("/increase-purchases")
+    @PostMapping("/purchases/increase-purchases")
     ResponseEntity<List<Purchase>> processPurchasesRequest(@RequestBody List<PurchaseDTO> purchaseDTOs);
 }
