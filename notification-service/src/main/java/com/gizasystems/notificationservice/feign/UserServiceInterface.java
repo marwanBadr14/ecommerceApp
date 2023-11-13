@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient("USER-SERVICE")
 public interface UserServiceInterface {
 
-    @GetMapping("/user/get-user-email-by-id")
+    @GetMapping("/get-user-email-by-id")
     public ResponseEntity<String> getUserEmailById(@RequestParam("id") Integer id);
 
 
