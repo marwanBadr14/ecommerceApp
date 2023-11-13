@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.EcommerceApp</groupId>
-	<artifactId>OrderServiceApp</artifactId>
+	<artifactId>order-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>OrderService</name>
 	<description>a service for orders</description>

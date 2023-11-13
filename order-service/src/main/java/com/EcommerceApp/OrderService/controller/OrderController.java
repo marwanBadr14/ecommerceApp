@@ -35,9 +35,6 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<Order> createOrder(@RequestBody Order order) {
         try {
-            order.setOrderDate(LocalDateTime.now());
-            order.setOrderStatus(Status.Pending);
-            order.setTotalAmount(BigDecimal.ZERO);
             Order createdOrder = orderService.save(order);
             return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -48,31 +45,37 @@ public class OrderController {
     // Get a list of all orders
     @GetMapping
     public ResponseEntity<List<Order>> getAllOrders() {
-        List<Order> orders = orderService.findAll();
-        return new ResponseEntity<>(orders, HttpStatus.OK);
+        try {
+            List<Order> orders = orderService.findAll();
+            return new ResponseEntity<>(orders, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     // Get a specific order by ID
     @GetMapping("/{orderId}")
     public ResponseEntity<Order> getOrderById(@PathVariable int orderId) {
-        Optional<Order> order = orderService.findById(orderId);
-        if (order.isPresent()) {
+        try{
+            Optional<Order> order = orderService.findById(orderId);
             return new ResponseEntity<>(order.get(), HttpStatus.OK);
-        } else {
-            throw new OrderNotFoundException("Order with ID " + orderId + " not found");
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     // Update an existing order
     @PutMapping("/{orderId}")
     public ResponseEntity<Order> updateOrder(@PathVariable int orderId, @RequestBody Order updatedOrder) {
-        if (orderService.existsById(orderId)) {
-            updatedOrder.setOrderId(orderId);
+        try{
+            Optional<Order> order = orderService.findById(orderId);
             Order updated = orderService.save(updatedOrder);
             return new ResponseEntity<>(updated, HttpStatus.OK);
-        } else {
-            throw new OrderNotFoundException("Order with ID " + orderId + " not found");
         }
+        catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 
     // Delete an order by ID

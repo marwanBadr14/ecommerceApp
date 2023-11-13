@@ -1,7 +1,7 @@
 package com.EcommerceApp.OrderService.controller;
 
-import com.EcommerceApp.OrderService.exception.OrderNotFoundException;
-import com.EcommerceApp.OrderService.exception.OrderItemNotFoundException;
+import com.EcommerceApp.OrderService.dto.OrderItemDTO;
+import com.EcommerceApp.OrderService.exception.*;
 import com.EcommerceApp.OrderService.feign.InventoryServiceClient;
 import com.EcommerceApp.OrderService.model.Order;
 import com.EcommerceApp.OrderService.model.OrderItem;
@@ -30,9 +30,9 @@ public class OrderItemController {
 
     // Create a new order item
     @PostMapping
-    public ResponseEntity<OrderItem> createOrderItem(@RequestBody OrderItem orderItem) {
+    public ResponseEntity<OrderItemDTO> createOrderItem(@RequestBody OrderItem orderItem) {
         try {
-
+            //TODO: shift the logic to orderservice
             Order order = orderService.findById(orderItem.getOrderId())
                     .orElseThrow(() -> new OrderNotFoundException("Order with ID " + orderItem.getOrderId() + " not found"));
 
@@ -45,7 +45,7 @@ public class OrderItemController {
 
             inventoryServiceClient.deductFromStock(orderItem.getProductId(),orderItem.getQuantity());
 
-            OrderItem createdOrderItem = orderItemService.createOrderItem(orderItem);
+            OrderItemDTO createdOrderItem = orderItemService.createOrderItem(orderItem);
 
             return new ResponseEntity<>(createdOrderItem, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -54,27 +54,44 @@ public class OrderItemController {
     }
 
     @GetMapping("/{orderId}")
-    public ResponseEntity<List<OrderItem>> getOrderItems(@PathVariable Integer orderId) {
-        List<OrderItem> orderItems = orderItemService.findByOrderId(orderId);
-        return new ResponseEntity<>(orderItems, HttpStatus.OK);
+    public ResponseEntity<List<OrderItemDTO>> getOrderItems(@PathVariable Integer orderId) {
+        try {
+            List<OrderItemDTO> orderItemDTOS = orderItemService.findByOrderId(orderId);
+            return new ResponseEntity<>(orderItemDTOS, HttpStatus.OK);
+        }catch (InvalidOrderIdException e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/{orderId}/{productId}")
-    public ResponseEntity<OrderItem> getOrderItem(@PathVariable Integer orderId, @PathVariable Integer productId) {
-        OrderItem orderItem = orderItemService.getOrderItemById(orderId, productId);
-        if (orderItem == null) {
-            throw new OrderItemNotFoundException("Order item with Order ID " + orderId + " and Product ID " + productId + " not found");
+    public ResponseEntity<OrderItemDTO> getOrderItem(@PathVariable Integer orderId, @PathVariable Integer productId) {
+        try {
+            OrderItemDTO orderItemDTO = orderItemService.getOrderItemById(orderId, productId);
+            return new ResponseEntity<>(orderItemDTO, HttpStatus.OK);
+        }catch (InvalidOrderIdException | InvalidProductIdException e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (OrderItemNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+
         }
-        return new ResponseEntity<>(orderItem, HttpStatus.OK);
     }
 
     // Update an order item
     @PutMapping("/{orderId}/{productId}")
-    public ResponseEntity<OrderItem> updateOrderItem(@PathVariable Integer orderId, @PathVariable Integer productId, @RequestBody OrderItem orderItem) {
+    public ResponseEntity<OrderItemDTO> updateOrderItem(@PathVariable Integer orderId, @PathVariable Integer productId, @RequestBody OrderItem orderItem) {
         try {
-            OrderItem updatedOrderItem = orderItemService.updateOrderItem(orderId, productId, orderItem);
+            OrderItemDTO updatedOrderItem = orderItemService.updateOrderItem(orderId, productId, orderItem);
             return new ResponseEntity<>(updatedOrderItem, HttpStatus.OK);
-        } catch (Exception e) {
+        } catch (InvalidOrderIdException | InvalidProductIdException | OrderIdModificationException | ProductIdModificationException e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }catch (OrderItemNotFoundException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
