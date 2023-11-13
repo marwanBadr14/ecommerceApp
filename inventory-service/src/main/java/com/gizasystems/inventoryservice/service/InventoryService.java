@@ -1,12 +1,14 @@
 package com.gizasystems.inventoryservice.service;
 
 import com.gizasystems.inventoryservice.dao.InventoryDao;
-import com.gizasystems.inventoryservice.exception.ApiRequestException;
+import com.gizasystems.inventoryservice.dto.ProductDto;
+import com.gizasystems.inventoryservice.exception.ProductNotFoundException;
+import com.gizasystems.inventoryservice.exception.QuantityExceededException;
+import com.gizasystems.inventoryservice.mapper.ProductMapper;
 import com.gizasystems.inventoryservice.model.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,45 +17,44 @@ public class InventoryService {
 
     @Autowired
     InventoryDao inventoryDao;
+    @Autowired
+    ProductMapper productMapper;
 
     // Retrieve all products in the inventory
-    public List<Product> getAllProducts() {
-        try{
-            return inventoryDao.findAll();
-        }catch (Exception e){
-            throw new ApiRequestException("Couldn't retrieve all products");
-        }
+    public List<ProductDto> getAllProducts() {
+        List<Product> products = inventoryDao.findAll();
+        if (products.isEmpty())
+            throw new ProductNotFoundException("Couldn't find products");
+
+        return productMapper.transferToDto(products);
     }
 
 
     // Retrieve a list of products that belong to the same category
-    public List<Product> getProductByCategory(String categoryName) {
-        try{
-            return inventoryDao.findByCategory(categoryName);
-        }catch (Exception e){
-            throw new ApiRequestException("Couldn't retrieve products that belong to category "+categoryName);
-        }
+    public List<ProductDto> getProductByCategory(String categoryName) {
+        List<Product> products = inventoryDao.findByCategory(categoryName);
+        if(products.isEmpty())
+            throw new ProductNotFoundException("No products belong to category #"+categoryName);
+
+        return productMapper.transferToDto(products);
     }
 
 
     // Deduct from the stock of a product after purchasing
     public void deductFromStock(Integer id, Integer quantity){
-        try{
-            Optional<Product> product = inventoryDao.findById(id);
-            if(product.isPresent()){
-                Product productFound = product.get();
-                if(productFound.getQuantity()>=quantity)
-                {
-                    int newQuantity = productFound.getQuantity()-quantity;
-                    productFound.setQuantity(newQuantity);
-                    inventoryDao.save(productFound);
-                }else
-                    throw new ApiRequestException("Quantity requested from product #"+id+" is more than the quantity" +
-                            "present in the stock");
-            }
-        }catch (Exception e){
-            throw new ApiRequestException("Couldn't deduct from product #"+id);
-        }
+        Optional<Product> product = inventoryDao.findById(id);
+        if(product.isEmpty())
+            throw new ProductNotFoundException("Couldn't find product with id #"+id);
+
+        Product productFound = product.get();
+        if(productFound.getQuantity()<quantity)
+            throw new QuantityExceededException("Quantity requested from product #"+id+" is more than the quantity" +
+                    "present in the stock");
+
+        int newQuantity = productFound.getQuantity()-quantity;
+        productFound.setQuantity(newQuantity);
+        inventoryDao.save(productFound);
+
     }
 
 }

@@ -1,10 +1,14 @@
 package com.gizasystems.inventoryservice.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
 @Entity
+@Setter
+@Getter
 @Table(name = "product_categories")
 public class Category {
 
@@ -17,37 +21,6 @@ public class Category {
     @ElementCollection
     private List<Integer> productsId;
 
-    public Category() {
-    }
-
-    public Category(String name, List<Integer> productsId) {
-        this.name = name;
-        this.productsId = productsId;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public List<Integer> getProductsId() {
-        return productsId;
-    }
-
-    public void setProductsId(List<Integer> productsId) {
-        this.productsId = productsId;
-    }
 
     @Override
     public String toString() {
