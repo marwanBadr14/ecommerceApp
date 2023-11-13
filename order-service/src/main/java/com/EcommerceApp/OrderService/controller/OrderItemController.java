@@ -3,16 +3,12 @@ package com.EcommerceApp.OrderService.controller;
 import com.EcommerceApp.OrderService.dto.OrderItemDTO;
 import com.EcommerceApp.OrderService.exception.*;
 import com.EcommerceApp.OrderService.feign.InventoryServiceClient;
-import com.EcommerceApp.OrderService.model.Order;
 import com.EcommerceApp.OrderService.model.OrderItem;
 import com.EcommerceApp.OrderService.service.OrderItemService;
-import com.EcommerceApp.OrderService.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -23,32 +19,17 @@ public class OrderItemController {
     private OrderItemService orderItemService;
 
     @Autowired
-    private OrderService orderService;
-
-    @Autowired
     InventoryServiceClient inventoryServiceClient;
 
     // Create a new order item
     @PostMapping
     public ResponseEntity<OrderItemDTO> createOrderItem(@RequestBody OrderItem orderItem) {
         try {
-            //TODO: shift the logic to orderservice
-            Order order = orderService.findById(orderItem.getOrderId())
-                    .orElseThrow(() -> new OrderNotFoundException("Order with ID " + orderItem.getOrderId() + " not found"));
-
-            orderItem.setItemPrice(inventoryServiceClient.getProductPrice(orderItem.getProductId()));
-
-            order.setTotalAmount(order.getTotalAmount()
-                    .add(orderItem.getItemPrice().multiply(BigDecimal.valueOf(orderItem.getQuantity()))));
-
-            orderService.save(order);
-
-            inventoryServiceClient.deductFromStock(orderItem.getProductId(),orderItem.getQuantity());
-
             OrderItemDTO createdOrderItem = orderItemService.createOrderItem(orderItem);
-
             return new ResponseEntity<>(createdOrderItem, HttpStatus.CREATED);
-        } catch (Exception e) {
+        } catch (OrderNotFoundException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

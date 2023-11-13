@@ -1,15 +1,19 @@
 package com.EcommerceApp.OrderService.service;
 
+import com.EcommerceApp.OrderService.dto.OrderDTO;
 import com.EcommerceApp.OrderService.dto.OrderItemDTO;
 import com.EcommerceApp.OrderService.dto.OrderItemPK;
 import com.EcommerceApp.OrderService.dao.OrderItemDao;
 import com.EcommerceApp.OrderService.exception.*;
+import com.EcommerceApp.OrderService.feign.InventoryServiceClient;
 import com.EcommerceApp.OrderService.mapper.OrderItemMapper;
+import com.EcommerceApp.OrderService.mapper.OrderMapper;
 import com.EcommerceApp.OrderService.model.OrderItem;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,9 +25,21 @@ public class OrderItemService {
     private OrderItemDao orderItemDao;
 
     private OrderItemMapper orderItemMapper;
+    private OrderMapper orderMapper;
 
+    @Autowired
+    private OrderService orderService;
+
+    @Autowired
+    InventoryServiceClient inventoryServiceClient;
 
     public OrderItemDTO createOrderItem(OrderItem orderItem) {
+        OrderDTO order = orderService.findById(orderItem.getOrderId());
+        orderItem.setItemPrice(inventoryServiceClient.getProductPrice(orderItem.getProductId()));
+        order.setTotalAmount(order.getTotalAmount()
+                .add(orderItem.getItemPrice().multiply(BigDecimal.valueOf(orderItem.getQuantity()))));
+        orderService.save(orderMapper.convertToEntity(order));
+        inventoryServiceClient.deductFromStock(orderItem.getProductId(),orderItem.getQuantity());
         OrderItem createdOrderItem = orderItemDao.save(orderItem);
         return orderItemMapper.convertToDTO(createdOrderItem);
     }
