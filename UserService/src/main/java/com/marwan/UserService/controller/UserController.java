@@ -31,7 +31,7 @@ public class UserController {
         if (userEmail != null) {
             return ResponseEntity.ok(userEmail);
         } else {
-            return new ResponseEntity<>("No user with this ID was found.", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<String>("No user with this ID was found.", HttpStatus.NOT_FOUND);
 
         }
     }
