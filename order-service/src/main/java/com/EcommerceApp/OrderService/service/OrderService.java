@@ -5,10 +5,12 @@ import com.EcommerceApp.OrderService.dto.OrderItemDTO;
 import com.EcommerceApp.OrderService.exception.*;
 import com.EcommerceApp.OrderService.feign.PurchaseServiceIClient;
 import com.EcommerceApp.OrderService.kafka.OrderProducer;
+import com.EcommerceApp.OrderService.mapper.OrderItemMapper;
 import com.EcommerceApp.OrderService.mapper.OrderMapper;
 import com.EcommerceApp.OrderService.model.Order;
 import com.EcommerceApp.OrderService.Status;
 import com.EcommerceApp.OrderService.dao.OrderDao;
+import com.EcommerceApp.OrderService.model.OrderItem;
 import com.gizasystems.purchasingservice.dto.PurchaseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,9 +19,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.time.ZoneId;
 
 @Service
 public class OrderService {
@@ -27,14 +31,12 @@ public class OrderService {
     @Autowired
     OrderDao orderDao;
 
+    private OrderItemMapper orderItemMapper;
 
-    @Autowired
     private OrderMapper orderMapper;
 
-    @Autowired
     private PurchaseServiceIClient purchaseServiceIClient;
 
-    @Autowired
     private OrderProducer orderProducer;
 
 
@@ -79,8 +81,8 @@ public class OrderService {
         return orderDao.findByTotalAmountGreaterThan(amount).stream().map(orderMapper::convertToDTO).collect(Collectors.toList());
     }
 
-    public List<OrderDTO> findByOrderDateBetween(LocalDateTime startDate, LocalDateTime endDate) {
-        if(startDate.isAfter(endDate)){
+    public List<OrderDTO> findByOrderDateBetween(Date startDate, Date endDate) {
+        if(startDate.after(endDate)){
             throw new InvalidDateRangeException("Invalid date range: Start date must be on or before the end date.");
         }
         return orderDao.findByOrderDateBetween(startDate,endDate).stream().map(orderMapper::convertToDTO).collect(Collectors.toList());

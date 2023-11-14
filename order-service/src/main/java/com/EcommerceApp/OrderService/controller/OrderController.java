@@ -6,10 +6,12 @@ import com.EcommerceApp.OrderService.exception.InvalidCustomerIdException;
 import com.EcommerceApp.OrderService.exception.InvalidDateRangeException;
 import com.EcommerceApp.OrderService.exception.InvalidOrderIdException;
 import com.EcommerceApp.OrderService.kafka.OrderProducer;
+import com.gizasystems.purchasingservice.dto.PurchaseDTO;
 import com.EcommerceApp.OrderService.exception.OrderNotFoundException;
 import com.EcommerceApp.OrderService.feign.PurchaseServiceIClient;
 import com.EcommerceApp.OrderService.model.Order;
 import com.EcommerceApp.OrderService.Status;
+import com.EcommerceApp.OrderService.model.OrderItem;
 import com.EcommerceApp.OrderService.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -19,8 +21,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/order")
@@ -134,8 +138,8 @@ public class OrderController {
     // Get orders within a date range
     @GetMapping("/dateRange")
     public ResponseEntity<List<OrderDTO>> getOrdersWithinDateRange(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime startDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime endDate
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate
     ) {
         try {
             List<OrderDTO> orders = orderService.findByOrderDateBetween(startDate, endDate);
