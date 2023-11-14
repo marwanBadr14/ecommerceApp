@@ -28,6 +28,11 @@ public class OrderItemService {
     private OrderItemMapper orderItemMapper;
 
     @Autowired
+    private OrderService orderService;
+
+    @Autowired
+    InventoryServiceClient inventoryServiceClient;
+    @Autowired
     private OrderMapper orderMapper;
 
     @Autowired
