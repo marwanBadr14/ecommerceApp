@@ -28,13 +28,14 @@ public class OrderItemService {
     private OrderItemMapper orderItemMapper;
 
     @Autowired
-    private OrderMapper orderMapper;
-
-    @Autowired
     private OrderService orderService;
 
     @Autowired
     InventoryServiceClient inventoryServiceClient;
+
+    @Autowired
+    private OrderMapper orderMapper;
+
 
     public OrderItemDTO createOrderItem(OrderItem orderItem) {
         OrderDTO order = orderService.findById(orderItem.getOrderId());
