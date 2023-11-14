@@ -69,6 +69,7 @@ public class OrderItemService {
         pk.setProductId(productId);
         validatOrderId(orderId);
         validatProductId(productId);
+        //TODO:not found
         orderItemDao.deleteById(pk);
     }
 
