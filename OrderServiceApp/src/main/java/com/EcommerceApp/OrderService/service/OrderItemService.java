@@ -32,18 +32,14 @@ public class OrderItemService {
 
     @Autowired
     InventoryServiceClient inventoryServiceClient;
+
     @Autowired
     private OrderMapper orderMapper;
 
-    @Autowired
-    private OrderService orderService;
-
-    @Autowired
-    InventoryServiceClient inventoryServiceClient;
 
     public OrderItemDTO createOrderItem(OrderItem orderItem) {
         OrderDTO order = orderService.findById(orderItem.getOrderId());
-        orderItem.setItemPrice(inventoryServiceClient.getProductPrice(orderItem.getProductId()));
+        orderItem.setItemPrice(inventoryServiceClient.getProductPrice(orderItem.getProductId()).getBody());
         order.setTotalAmount(order.getTotalAmount()
                 .add(orderItem.getItemPrice().multiply(BigDecimal.valueOf(orderItem.getQuantity()))));
         orderService.save(orderMapper.convertToEntity(order));
@@ -73,6 +69,7 @@ public class OrderItemService {
         pk.setProductId(productId);
         validatOrderId(orderId);
         validatProductId(productId);
+        //TODO:not found
         orderItemDao.deleteById(pk);
     }
 
