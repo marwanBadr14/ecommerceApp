@@ -2,12 +2,15 @@ package com.EcommerceApp.OrderService.mapper;
 
 import com.EcommerceApp.OrderService.model.Order;
 import com.EcommerceApp.OrderService.dto.OrderDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
 
 @Component
 public class OrderMapper {
+
+    @Autowired
     private OrderItemMapper orderItemMapper;
 
 
@@ -22,7 +25,7 @@ public class OrderMapper {
                         .map(orderItemMapper::convertToDTO)
                         .collect(Collectors.toList()))
                 .build();
-    }
+   }
 
     public Order convertToEntity(OrderDTO orderDTO) {
         Order order = new Order();

@@ -40,7 +40,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.EcommerceApp</groupId>
-			<artifactId>order-service</artifactId>
+			<artifactId>OrderServiceApp</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>

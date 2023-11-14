@@ -24,7 +24,10 @@ public class OrderItemService {
     @Autowired
     private OrderItemDao orderItemDao;
 
+    @Autowired
     private OrderItemMapper orderItemMapper;
+
+    @Autowired
     private OrderMapper orderMapper;
 
     @Autowired

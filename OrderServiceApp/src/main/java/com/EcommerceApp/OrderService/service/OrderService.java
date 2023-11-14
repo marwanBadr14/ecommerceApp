@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,10 +28,13 @@ public class OrderService {
     OrderDao orderDao;
 
 
+    @Autowired
     private OrderMapper orderMapper;
 
+    @Autowired
     private PurchaseServiceIClient purchaseServiceIClient;
 
+    @Autowired
     private OrderProducer orderProducer;
 
 
@@ -75,8 +79,8 @@ public class OrderService {
         return orderDao.findByTotalAmountGreaterThan(amount).stream().map(orderMapper::convertToDTO).collect(Collectors.toList());
     }
 
-    public List<OrderDTO> findByOrderDateBetween(Date startDate, Date endDate) {
-        if(startDate.after(endDate)){
+    public List<OrderDTO> findByOrderDateBetween(LocalDateTime startDate, LocalDateTime endDate) {
+        if(startDate.isAfter(endDate)){
             throw new InvalidDateRangeException("Invalid date range: Start date must be on or before the end date.");
         }
         return orderDao.findByOrderDateBetween(startDate,endDate).stream().map(orderMapper::convertToDTO).collect(Collectors.toList());
