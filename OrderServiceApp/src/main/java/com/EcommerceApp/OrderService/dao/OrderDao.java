@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -17,5 +18,5 @@ public interface OrderDao extends JpaRepository<Order, Integer> {
 
     List<Order> findByTotalAmountGreaterThan(BigDecimal amount);
 
-    List<Order> findByOrderDateBetween(Date orderDate, Date orderDate2);
+    List<Order> findByOrderDateBetween(LocalDateTime orderDate, LocalDateTime orderDate2);
 }

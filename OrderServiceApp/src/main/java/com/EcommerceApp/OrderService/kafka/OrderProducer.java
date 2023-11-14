@@ -2,7 +2,6 @@ package com.EcommerceApp.OrderService.kafka;
 
 import com.EcommerceApp.OrderService.feign.InventoryServiceClient;
 import com.EcommerceApp.OrderService.model.Order;
-import com.EcommerceApp.OrderService.model.OrderItem;
 import org.apache.kafka.clients.admin.NewTopic;
 
 import org.slf4j.Logger;
@@ -14,7 +13,6 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Service
 public class OrderProducer {
