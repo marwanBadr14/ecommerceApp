@@ -39,7 +39,7 @@ public class OrderItemService {
 
     public OrderItemDTO createOrderItem(OrderItem orderItem) {
         OrderDTO order = orderService.findById(orderItem.getOrderId());
-        orderItem.setItemPrice(inventoryServiceClient.getProductPrice(orderItem.getProductId()));
+        orderItem.setItemPrice(inventoryServiceClient.getProductPrice(orderItem.getProductId()).getBody());
         order.setTotalAmount(order.getTotalAmount()
                 .add(orderItem.getItemPrice().multiply(BigDecimal.valueOf(orderItem.getQuantity()))));
         orderService.save(orderMapper.convertToEntity(order));
