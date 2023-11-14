@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 @RestController
 @RequestMapping("/products")
 public class ProductController {
+    // TODO: 11/14/2023 nice to have use constructor injection
 
     @Autowired
     ProductService productService;

@@ -19,6 +19,7 @@ public class Category {
     @Column(name = "category_name")
     private String name;
     @ElementCollection
+    // TODO: 11/14/2023 why not use @ManytoMany or @OneToMany
     private List<Integer> productsId;
 
 

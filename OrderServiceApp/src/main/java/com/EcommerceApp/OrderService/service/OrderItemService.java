@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrderItemService {
-
+    // TODO: 11/14/2023 use constructor injection 
     @Autowired
     private OrderItemDao orderItemDao;
 
@@ -50,6 +50,7 @@ public class OrderItemService {
 
 
     public OrderItemDTO getOrderItemById(Integer orderId, Integer productId) {
+        // TODO: 11/14/2023 use more meaningfully variable name
         OrderItemPK pk = new OrderItemPK();
         pk.setOrderId(orderId);
         pk.setProductId(productId);
@@ -64,6 +65,7 @@ public class OrderItemService {
     }
 
     public void deleteOrderItem(Integer orderId, Integer productId) {
+        // TODO: 11/14/2023 use more meaningfully variable name
         OrderItemPK pk = new OrderItemPK();
         pk.setOrderId(orderId);
         pk.setProductId(productId);
@@ -75,6 +77,7 @@ public class OrderItemService {
 
 
     public OrderItemDTO updateOrderItem(Integer orderId, Integer productId, OrderItem updatedOrderItem) {
+        // TODO: 11/14/2023 use more meaningfully variable name
         OrderItemPK pk = new OrderItemPK();
         pk.setOrderId(orderId);
         pk.setProductId(productId);
@@ -99,6 +102,7 @@ public class OrderItemService {
         return orderItemList.stream().map(orderItemMapper::convertToDTO).collect(Collectors.toList());
     }
 
+    // TODO: 11/14/2023 move them to a validation class better design
     private void validatOrderId(Integer orderId){
         if(orderId <= 0) throw new InvalidOrderIdException("Order id is Invalid");
     }

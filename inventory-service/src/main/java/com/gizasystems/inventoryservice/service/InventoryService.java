@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @Service
 public class InventoryService {
-
+    // TODO: 11/14/2023 nice to have constructor injection
     @Autowired
     InventoryDao inventoryDao;
     @Autowired
