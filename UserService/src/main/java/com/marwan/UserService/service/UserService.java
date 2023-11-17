@@ -15,12 +15,10 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserService {
 
-    @Autowired
+
     private final UserRepository userRepository;
 
-    @Autowired
     private final PasswordEncoder passwordEncoder;
-
 
     private final UserMapper userMapper;
 

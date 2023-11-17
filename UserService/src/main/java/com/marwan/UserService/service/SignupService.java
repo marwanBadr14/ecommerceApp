@@ -22,8 +22,7 @@ public class SignupService {
 
     private final JwtService jwtService;
 
-    @Autowired
-    private UserMapConvertor userMapConvertor;
+    private final UserMapConvertor userMapConvertor;
 
     public Object register(RegisterRequest request) throws IllegalAccessException {
 
