@@ -10,8 +10,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/categories")
+// TODO: 11/14/2023 nice controller *clap* *clap*
 public class CategoryController {
-
+    // TODO: 11/14/2023 nice to have use constructor injection
     @Autowired
     CategoryService categoryService;
     @GetMapping("/all")

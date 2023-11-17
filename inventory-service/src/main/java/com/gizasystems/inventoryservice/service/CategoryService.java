@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Service
 public class CategoryService {
-
+    // TODO: 11/14/2023 nice to have use constructor injection
     @Autowired
     CategoryDao categoryDao;
     @Autowired
@@ -53,6 +53,7 @@ public class CategoryService {
             throw new CategoryNotFoundException("Couldn't find a category with " + id);
 
         Category editedCategory = category.get();
+        // TODO: 11/14/2023 not needed already its found by id
         editedCategory.setId(id);
         if (categoryDto.getName() != null)
             editedCategory.setName(categoryDto.getName());
