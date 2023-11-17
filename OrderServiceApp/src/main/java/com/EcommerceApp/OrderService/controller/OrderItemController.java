@@ -90,13 +90,4 @@ public class OrderItemController {
         }
     }
 
-    @ExceptionHandler(OrderNotFoundException.class)
-    public ResponseEntity<String> handleOrderNotFoundException(OrderNotFoundException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(OrderItemNotFoundException.class)
-    public ResponseEntity<String> handleOrderItemNotFoundException(OrderItemNotFoundException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-    }
 }

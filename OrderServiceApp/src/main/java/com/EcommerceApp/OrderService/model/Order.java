@@ -2,6 +2,8 @@ package com.EcommerceApp.OrderService.model;
 import com.EcommerceApp.OrderService.Status;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -10,6 +12,8 @@ import java.util.List;
 @Entity
 @EqualsAndHashCode
 @Table(name = "orders")
+@Getter
+@Setter
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,63 +46,17 @@ public class Order {
     public Order() {
     }
 
-    public Integer getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(Integer orderId) {
-        this.orderId = orderId;
-    }
-
-    public Integer getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(Integer customerId) {
-        this.customerId = customerId;
-    }
-
-    public LocalDateTime getOrderDate() {
-        return orderDate;
-    }
-
-    public void setOrderDate(LocalDateTime orderDate) {
-        this.orderDate = orderDate;
-    }
-
-    public BigDecimal getTotalAmount() {
-        return totalAmount;
-    }
-
-    public void setTotalAmount(BigDecimal totalAmount) {
-        this.totalAmount = totalAmount;
-    }
-
-    public Status getOrderStatus() {
-        return orderStatus;
-    }
-
-    public void setOrderStatus(Status orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    public List<OrderItem> getOrderItems() {
-        return orderItems;
-    }
-
-    public void setOrderItems(List<OrderItem> orderItems) {
-        this.orderItems = orderItems;
-    }
 
     @Override
     public String toString() {
         return "Order{" +
                 "orderId=" + orderId +
                 ", customerId=" + customerId +
-            //    ", orderDate=" + orderDate +
+                //    ", orderDate=" + orderDate +
                 ", totalAmount=" + totalAmount +
                 ", orderStatus=" + orderStatus +
-            //    ", orderItems=" + orderItems +
+                //    ", orderItems=" + orderItems +
                 '}';
     }
+
 }

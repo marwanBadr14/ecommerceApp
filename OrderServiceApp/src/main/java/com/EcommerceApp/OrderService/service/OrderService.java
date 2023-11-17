@@ -90,7 +90,9 @@ public class OrderService {
         return orderDao.existsById(orderId);
     }
 
+    //TODO: test this function
     public List<OrderItemDTO> executeOrder(int orderId) {
+        validateOrderId(orderId);
         if (existsById(orderId)) {
             OrderDTO order = findById(orderId);
             List<PurchaseDTO> purchaseDTOS = new ArrayList<>();
@@ -103,7 +105,6 @@ public class OrderService {
         } else {
             throw new OrderNotFoundException("Order with ID " + orderId + " not found");
         }
-
     }
 
     private void validateOrderId(Integer orderId){
@@ -114,10 +115,6 @@ public class OrderService {
         if(customerId <= 0) throw new InvalidCustomerIdException("Customer id is Invalid");
     }
 
-    @ExceptionHandler(InvalidCustomerIdException.class)
-    public ResponseEntity<String> handleInvalidCustomerIdException(InvalidCustomerIdException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-    }
 
     public OrderDTO update(int orderId, Order updatedOrder) {
         OrderDTO orderDTO = findById(orderId);
