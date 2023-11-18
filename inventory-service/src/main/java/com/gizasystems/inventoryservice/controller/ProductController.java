@@ -12,8 +12,11 @@ import java.math.BigDecimal;
 @RequestMapping("/products")
 public class ProductController {
 
-    @Autowired
     ProductService productService;
+
+    public ProductController(ProductService productService) {
+        this.productService = productService;
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductDto> getProductById(@PathVariable Integer id){

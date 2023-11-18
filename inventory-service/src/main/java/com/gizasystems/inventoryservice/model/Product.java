@@ -1,14 +1,15 @@
 package com.gizasystems.inventoryservice.model;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 
+@Entity
 @Setter
 @Getter
-@Entity
 @Table(name = "products")
 public class Product {
 

@@ -21,9 +21,21 @@ public class AuthoritiesManager {
         populateUrls();
     }
 
+
     private void populateUrls() {
         urlRoles.put("/user/add-admin", "MANAGER");
         urlRoles.put("/purchase/get-purchase", "CUSTOMER-ADMIN-MANAGER");
+        urlRoles.put("/categories/all", "CUSTOMER-ADMIN-MANAGER");
+        urlRoles.put("/categories/{id}'", "CUSTOMER-ADMIN-MANAGER");
+        urlRoles.put("/products/{id}", "CUSTOMER-ADMIN-MANAGER");
+        urlRoles.put("/inventory/categories/{categoryName}", "CUSTOMER-ADMIN-MANAGER");
+        urlRoles.put("/categories/add", "ADMIN-MANAGER");
+        urlRoles.put("/categories/edit/{id}", "ADMIN-MANAGER");
+        urlRoles.put("/categories/delete/{id}", "ADMIN-MANAGER");
+        urlRoles.put("/products/add", "ADMIN-MANAGER");
+        urlRoles.put("/products/edit/{id}", "ADMIN-MANAGER");
+        urlRoles.put("/products/delete/{id}", "ADMIN-MANAGER");
+        urlRoles.put("/inventory/all", "CUSTOMER-ADMIN-MANAGER");
     }
 
 

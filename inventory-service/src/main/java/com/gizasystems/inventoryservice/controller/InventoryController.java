@@ -12,8 +12,14 @@ import java.util.List;
 @RequestMapping("/inventory")
 public class InventoryController {
 
-    @Autowired
+    // TODO el customer lw 3ayez yshof kol el products msh mafrood yshoof el quantity bardo
+
     InventoryService inventoryService;
+
+    public InventoryController(InventoryService inventoryService) {
+        this.inventoryService = inventoryService;
+    }
+
     @GetMapping("/all")
     public ResponseEntity<List<ProductDto>> getAllProducts(){
         return ResponseEntity.ok(inventoryService.getAllProducts());

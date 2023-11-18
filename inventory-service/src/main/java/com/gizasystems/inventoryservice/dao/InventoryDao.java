@@ -11,10 +11,9 @@ import java.util.List;
 @Repository
 public interface InventoryDao extends JpaRepository<Product,Integer> {
 
-    @Query(value = "SELECT p.* " +
-            "FROM products p " +
-            "JOIN product_categories pc ON p.category_id = pc.category_id " +
-            "WHERE pc.category_name = :categoryName",nativeQuery = true)
+    @Query("SELECT p " +
+            "FROM Product p " +
+            "WHERE p.categoryId IN (SELECT c.id FROM Category c WHERE c.name = :categoryName)")
     List<Product> findByCategory(String categoryName);
 
 }

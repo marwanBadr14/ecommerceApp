@@ -14,11 +14,13 @@ import java.util.Optional;
 
 @Service
 public class InventoryService {
-
-    @Autowired
     InventoryDao inventoryDao;
-    @Autowired
     ProductMapper productMapper;
+
+    public InventoryService(InventoryDao inventoryDao, ProductMapper productMapper) {
+        this.inventoryDao = inventoryDao;
+        this.productMapper = productMapper;
+    }
 
     // Retrieve all products in the inventory
     public List<ProductDto> getAllProducts() {

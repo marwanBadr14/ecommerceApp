@@ -4,11 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
-@Getter
 @Builder
-public class CategoryDto {
+public record CategoryDto(Integer id, String name) {
 
-    Integer id;
-    String name;
 }
