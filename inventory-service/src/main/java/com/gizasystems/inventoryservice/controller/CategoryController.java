@@ -12,8 +12,12 @@ import java.util.List;
 @RequestMapping("/categories")
 public class CategoryController {
 
-    @Autowired
     CategoryService categoryService;
+
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
+    }
+
     @GetMapping("/all")
     public ResponseEntity<List<CategoryDto>> getAllCategories(){
             return ResponseEntity.ok(categoryService.getAllCategories());
