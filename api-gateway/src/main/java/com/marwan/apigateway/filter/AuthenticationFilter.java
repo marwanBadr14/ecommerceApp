@@ -7,7 +7,6 @@ import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 
@@ -20,8 +19,6 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     @Autowired
     private AuthoritiesManager authoritiesManager;
 
-    //    @Autowired
-//    private RestTemplate template;
     @Autowired
     private JwtUtil jwtUtil;
 
@@ -43,9 +40,8 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                     authHeader = authHeader.substring(7);
                 }
                 try {
-//                    //REST call to AUTH service
-//                    template.getForObject("http://IDENTITY-SERVICE//validate?token" + authHeader, String.class);
-                    System.out.println("\n" + "\n" + "==========================================" + authHeader + "===============================================" + "\n" + "\n");
+                    //REST call to AUTH service
+
                     jwtUtil.validateToken(authHeader);
 
                     // TODO: Add logic to validate role
@@ -64,21 +60,20 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 
                     // check if user has the proper role for the given URL -> implement helper class
                     if(!authoritiesManager.isUserAuthorized(url,userRole)){
-
-                        // TODO: adjust this code to return HttpResponse.Unauthorized
-                        //return new ResponseEntity<String>("Unauthorized user!!", HttpStatus.UNAUTHORIZED);
                         System.out.println("\n" + "\n" + "Reached authority check and failed!!");
-//                        ServerHttpResponse response = exchange.getResponse();
-//                        response.setStatusCode(HttpStatus.UNAUTHORIZED);
-                        throw new RuntimeException();
-
+                        ServerHttpResponse response = exchange.getResponse();
+                        response.setStatusCode(HttpStatus.UNAUTHORIZED);
+                        return response.setComplete();
                     }
 
 
                 } catch (Exception e) {
                     // TODO: adjust this code to return HttpResponse.Unauthorized
-                    System.out.println("invalid access...!");
-                    throw new RuntimeException("un authorized access to application");
+//                    System.out.println("invalid access...!");
+//                    ServerHttpResponse response = exchange.getResponse();
+//                    response.setStatusCode(HttpStatus.UNAUTHORIZED);
+//                    return response.setComplete();
+                    throw new RuntimeException("An error has occurred while trying to authenticate and authorize the request");
                 }
             }
             return chain.filter(exchange);

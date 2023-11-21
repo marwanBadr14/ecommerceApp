@@ -23,8 +23,6 @@ public class JwtService {
 
     @Value("${myapp.expiration-time}")
     private long expirationTime;
-    private Date creationData = new Date(System.currentTimeMillis());
-    private Date expirationDate = new Date(System.currentTimeMillis() + expirationTime);
 
     public String extractUsername(String token){
         return extractClaim(token, Claims::getSubject);
@@ -35,6 +33,9 @@ public class JwtService {
     }
 
     public String generateToken(Map<String, Object> extraClaims, String username){
+        Date creationData = new Date(System.currentTimeMillis());
+        Date expirationDate = new Date(System.currentTimeMillis() + expirationTime);
+
         return Jwts
                 .builder()
                 .setClaims(extraClaims)

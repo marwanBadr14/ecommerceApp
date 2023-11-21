@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
@@ -12,6 +13,7 @@ public class UserController {
 
     private final UserService userService;
 
+    //@PreAuthorize("hasAuthority(T(com.marwan.UserService.repository.Role).MANAGER)")
     @PostMapping("/add-admin")
     public ResponseEntity<String> addAdmin(
             @RequestParam String firstName,
@@ -22,6 +24,20 @@ public class UserController {
         userService.addAdmin(firstName, lastName, email, password);
 
         return ResponseEntity.ok("Admin was added successfully");
+    }
+
+    @DeleteMapping("/delete-admin")
+    public ResponseEntity<String> deleteAdmin(
+            @RequestParam("email") String email) {
+
+        try{
+            userService.deleteAdmin(email);
+        }
+        catch (Exception e){
+            throw new RuntimeException("Admin was not found, make sure you are providing the right email");
+        }
+
+        return ResponseEntity.ok("Admin was deleted successfully");
     }
 
     @GetMapping("/get-user-email-by-id")
