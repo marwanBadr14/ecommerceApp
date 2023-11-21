@@ -48,6 +48,10 @@ public class SignupService {
         //var jwtToken = jwtService.generateToken(user);
 
         // returns the JWT token
-        return AuthenticationResponse.builder().token(jwtToken).build();
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .email(user.getEmail())
+                .role(user.getRole().toString())
+                .build();
     }
 }

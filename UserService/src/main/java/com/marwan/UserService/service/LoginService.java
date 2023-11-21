@@ -49,7 +49,11 @@ public class LoginService {
         // var jwtToken = jwtService.generateToken(user);
 
         // return the JWT token
-        return AuthenticationResponse.builder().token(jwtToken).build();
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .email(user.getEmail())
+                .role(user.getRole().toString().toLowerCase())
+                .build();
     }
 
 

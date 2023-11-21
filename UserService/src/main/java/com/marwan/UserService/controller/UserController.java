@@ -1,9 +1,12 @@
 package com.marwan.UserService.controller;
+import com.marwan.UserService.dto.UserDTO;
 import com.marwan.UserService.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -40,6 +43,34 @@ public class UserController {
         return ResponseEntity.ok("Admin was deleted successfully");
     }
 
+    @PutMapping("/promote")
+    public ResponseEntity<String> promoteUser(
+            @RequestParam("email") String email) {
+        try{
+            userService.promoteUser(email);
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+            throw new RuntimeException("User was not found, make sure you are providing the right email");
+        }
+
+        return ResponseEntity.ok("User was promoted successfully");
+    }
+
+    @PutMapping("/demote")
+    public ResponseEntity<String> demoteUser(
+            @RequestParam("email") String email) {
+        try{
+            userService.demoteUser(email);
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+            throw new RuntimeException("User was not found, make sure you are providing the right email");
+        }
+
+        return ResponseEntity.ok("User was demoted successfully");
+    }
+
     @GetMapping("/get-user-email-by-id")
     public ResponseEntity<String> getUserEmailById(@RequestParam("id") Integer id) {
         String userEmail = userService.getUserEmailById(id);
@@ -50,6 +81,14 @@ public class UserController {
             return new ResponseEntity<String>("No user with this ID was found.", HttpStatus.NOT_FOUND);
 
         }
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Integer id) {
+        return ResponseEntity.ok(userService.getUserById(id));
+    }
+    @GetMapping("/all")
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
 }

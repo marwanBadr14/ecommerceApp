@@ -4,6 +4,8 @@ import com.marwan.UserService.dto.UserDTO;
 import com.marwan.UserService.repository.User;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class UserMapper {
 
@@ -16,6 +18,12 @@ public class UserMapper {
                 .password(user.getPassword())
                 .role(user.getRole())
                 .build();
+    }
+
+    public List<UserDTO> userEntityToDto(List<User> users){
+        return users.stream()
+                .map(this::userEntityToDto)
+                .toList();
     }
 
     public User userDtoToEntity(UserDTO userDTO){

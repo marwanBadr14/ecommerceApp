@@ -123,4 +123,8 @@ public class ProductService {
 
         productDao.deleteById(id);
     }
+
+    public List<ProductDto> getAllProducts() {
+        return productMapper.transferToDto(productDao.findAll());
+    }
 }

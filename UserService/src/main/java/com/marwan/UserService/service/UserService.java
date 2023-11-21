@@ -9,6 +9,8 @@ import com.marwan.UserService.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -44,14 +46,45 @@ public class UserService {
 
     public void deleteAdmin(String email) {
         Optional<User> user = userRepository.findByEmail(email);
-        User admin = User.builder()
-                    .firstName(user.get().getFirstName())
-                    .lastName(user.get().getLastName())
-                    .email(user.get().getEmail())
-                    .password(user.get().getPassword())
-                    .id(user.get().getId())
-                    .role(user.get().getRole())
-                    .build();
+        User admin = user.orElseThrow();
         userRepository.delete(admin);
+    }
+
+    public void promoteUser(String email) {
+        Optional<User> userOp = userRepository.findByEmail(email);
+        User user = userOp.orElseThrow();
+        User admin = User.builder()
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .id(user.getId())
+                .role(Role.ADMIN)
+                .build();
+        userRepository.save(admin);
+    }
+
+    public List<UserDTO> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        return userMapper.userEntityToDto(users);
+    }
+
+    public UserDTO getUserById(Integer id) {
+        User user = userRepository.getReferenceById(id);
+        return userMapper.userEntityToDto(user);
+    }
+
+    public void demoteUser(String email) {
+        Optional<User> userOp = userRepository.findByEmail(email);
+        User user = userOp.orElseThrow();
+        User admin = User.builder()
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .id(user.getId())
+                .role(Role.CUSTOMER)
+                .build();
+        userRepository.save(admin);
     }
 }
