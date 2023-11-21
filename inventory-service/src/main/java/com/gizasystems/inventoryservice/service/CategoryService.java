@@ -13,12 +13,14 @@ import java.util.Optional;
 
 @Service
 public class CategoryService {
-    // TODO: 11/14/2023 nice to have use constructor injection
-    @Autowired
+
     CategoryDao categoryDao;
-    @Autowired
     CategoryMapper categoryMapper;
 
+    public CategoryService(CategoryDao categoryDao, CategoryMapper categoryMapper) {
+        this.categoryDao = categoryDao;
+        this.categoryMapper = categoryMapper;
+    }
 
     // Retrieve a list of all categories
     public List<CategoryDto> getAllCategories() {
@@ -40,7 +42,7 @@ public class CategoryService {
     // Add a new category
     public CategoryDto addCategory(CategoryDto categoryDto) {
         Category category = new Category();
-        category.setName(categoryDto.getName());
+        category.setName(categoryDto.name());
         categoryDao.save(category);
         return categoryMapper.transferToDto(category);
     }
@@ -53,10 +55,9 @@ public class CategoryService {
             throw new CategoryNotFoundException("Couldn't find a category with " + id);
 
         Category editedCategory = category.get();
-        // TODO: 11/14/2023 not needed already its found by id
         editedCategory.setId(id);
-        if (categoryDto.getName() != null)
-            editedCategory.setName(categoryDto.getName());
+        if (categoryDto.name() != null)
+            editedCategory.setName(categoryDto.name());
 
         categoryDao.save(editedCategory);
         return categoryMapper.transferToDto(editedCategory);

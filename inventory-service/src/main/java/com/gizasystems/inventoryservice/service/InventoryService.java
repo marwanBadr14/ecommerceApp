@@ -14,11 +14,13 @@ import java.util.Optional;
 
 @Service
 public class InventoryService {
-    // TODO: 11/14/2023 nice to have constructor injection
-    @Autowired
     InventoryDao inventoryDao;
-    @Autowired
     ProductMapper productMapper;
+
+    public InventoryService(InventoryDao inventoryDao, ProductMapper productMapper) {
+        this.inventoryDao = inventoryDao;
+        this.productMapper = productMapper;
+    }
 
     // Retrieve all products in the inventory
     public List<ProductDto> getAllProducts() {

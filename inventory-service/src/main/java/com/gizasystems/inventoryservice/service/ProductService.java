@@ -18,13 +18,16 @@ import java.util.Optional;
 @Service
 public class ProductService {
 
-    @Autowired
-    ProductDao productDao;
-    @Autowired
-    CategoryDao categoryDao;
 
-    @Autowired
+    ProductDao productDao;
+    CategoryDao categoryDao;
     ProductMapper productMapper;
+
+    public ProductService(ProductDao productDao, CategoryDao categoryDao, ProductMapper productMapper) {
+        this.productDao = productDao;
+        this.categoryDao = categoryDao;
+        this.productMapper = productMapper;
+    }
 
     // Retrieve a specific product by its id
     public ProductDto getProductById(Integer id) {
@@ -54,18 +57,11 @@ public class ProductService {
 
     // Add a new product
     public ProductDto addProduct(ProductDto productDto) {
-        Optional<Category> category = categoryDao.findById(productDto.getCategoryId());
+        Optional<Category> category = categoryDao.findById(productDto.categoryId());
         if (category.isEmpty())
-            throw new CategoryNotFoundException("Couldn't find a category with id #"+productDto.getCategoryId());
+            throw new CategoryNotFoundException("Couldn't find a category with id #"+productDto.categoryId());
 
-
-        Product product = new Product();
-        product.setName(productDto.getName());
-        product.setDescription(productDto.getDescription());
-        product.setCategoryId(productDto.getCategoryId());
-        product.setPrice(productDto.getPrice());
-        product.setQuantity(productDto.getQuantity());
-        product.setImageUrl(productDto.getImageUrl());
+        Product product = productMapper.transferToEntity(productDto);
         productDao.save(product);
 
         Category categoryFound = category.get();
@@ -84,15 +80,15 @@ public class ProductService {
             throw new ProductNotFoundException("Couldn't find a product with id #"+id);
 
         Product editedProduct = product.get();
-        if (productDto.getName()!=null)
-          editedProduct.setName(productDto.getName());
-        if (productDto.getDescription()!=null)
-         editedProduct.setDescription(productDto.getDescription());
+        if (productDto.name()!=null)
+          editedProduct.setName(productDto.name());
+        if (productDto.description()!=null)
+         editedProduct.setDescription(productDto.description());
 
-        if(productDto.getCategoryId()!=null) {
-            Optional<Category> category = categoryDao.findById(productDto.getCategoryId());
+        if(productDto.categoryId()!=null) {
+            Optional<Category> category = categoryDao.findById(productDto.categoryId());
             if(category.isEmpty())
-                throw new CategoryNotFoundException("Couldn't find a category with id #"+productDto.getCategoryId());
+                throw new CategoryNotFoundException("Couldn't find a category with id #"+productDto.categoryId());
 
 
             Category newCategory = category.get();
@@ -105,15 +101,15 @@ public class ProductService {
             oldCategory.getProductsId().remove(editedProduct.getId());
             categoryDao.save(oldCategory);
 
-            editedProduct.setCategoryId(productDto.getCategoryId());
+            editedProduct.setCategoryId(productDto.categoryId());
         }
 
-        if(productDto.getPrice()!=null)
-            editedProduct.setPrice(productDto.getPrice());
-        if(productDto.getQuantity()!=null)
-            editedProduct.setQuantity(productDto.getQuantity());
-        if(productDto.getImageUrl()!=null)
-            editedProduct.setImageUrl(productDto.getImageUrl());
+        if(productDto.price()!=null)
+            editedProduct.setPrice(productDto.price());
+        if(productDto.quantity()!=null)
+            editedProduct.setQuantity(productDto.quantity());
+        if(productDto.imageUrl()!=null)
+            editedProduct.setImageUrl(productDto.imageUrl());
 
         productDao.save(editedProduct);
         return productMapper.transferToDto(editedProduct);

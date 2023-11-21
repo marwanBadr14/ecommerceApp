@@ -13,8 +13,14 @@ import java.util.List;
 public class InventoryController {
     // TODO: 11/14/2023 nice to have use constructor injection
 
-    @Autowired
+    // TODO el customer lw 3ayez yshof kol el products msh mafrood yshoof el quantity bardo
+
     InventoryService inventoryService;
+
+    public InventoryController(InventoryService inventoryService) {
+        this.inventoryService = inventoryService;
+    }
+
     @GetMapping("/all")
     public ResponseEntity<List<ProductDto>> getAllProducts(){
         return ResponseEntity.ok(inventoryService.getAllProducts());

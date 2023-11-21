@@ -10,6 +10,7 @@ import java.util.List;
 @Component
 public class CategoryMapper {
 
+    // From entity to dto
     public CategoryDto transferToDto(Category category){
         if(category == null)
             return null;
@@ -18,9 +19,9 @@ public class CategoryMapper {
                .id(category.getId())
                .name(category.getName())
                .build();
-
     }
 
+    // From list of entities to a list of dtos
     public List<CategoryDto> transferToDto(List<Category> categories){
         if(categories == null)
             return null;
@@ -39,4 +40,5 @@ public class CategoryMapper {
 
         return categoryDtos;
     }
+
 }

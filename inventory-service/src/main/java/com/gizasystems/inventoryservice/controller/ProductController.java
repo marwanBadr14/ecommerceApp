@@ -13,8 +13,11 @@ import java.math.BigDecimal;
 public class ProductController {
     // TODO: 11/14/2023 nice to have use constructor injection
 
-    @Autowired
     ProductService productService;
+
+    public ProductController(ProductService productService) {
+        this.productService = productService;
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductDto> getProductById(@PathVariable Integer id){
