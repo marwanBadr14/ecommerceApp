@@ -2,7 +2,6 @@ package com.gizasystems.inventoryservice.controller;
 
 import com.gizasystems.inventoryservice.dto.ProductDto;
 import com.gizasystems.inventoryservice.service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,11 +16,6 @@ public class ProductController {
 
     public ProductController(ProductService productService) {
         this.productService = productService;
-    }
-
-    @GetMapping
-    public ResponseEntity<Iterable<ProductDto>> getAllProducts(){
-        return ResponseEntity.ok(productService.getAllProducts());
     }
 
     @GetMapping("/{id}")

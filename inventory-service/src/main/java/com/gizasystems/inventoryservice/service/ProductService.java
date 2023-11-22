@@ -8,7 +8,6 @@ import com.gizasystems.inventoryservice.exception.ProductNotFoundException;
 import com.gizasystems.inventoryservice.mapper.ProductMapper;
 import com.gizasystems.inventoryservice.model.Category;
 import com.gizasystems.inventoryservice.model.Product;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -122,9 +121,5 @@ public class ProductService {
             throw new ProductNotFoundException("Couldn't find a product with id:"+id);
 
         productDao.deleteById(id);
-    }
-
-    public List<ProductDto> getAllProducts() {
-        return productMapper.transferToDto(productDao.findAll());
     }
 }
