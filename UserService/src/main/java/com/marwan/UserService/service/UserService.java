@@ -77,7 +77,7 @@ public class UserService {
     public void demoteUser(String email) {
         Optional<User> userOp = userRepository.findByEmail(email);
         User user = userOp.orElseThrow();
-        User admin = User.builder()
+        User customer = User.builder()
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .email(user.getEmail())
@@ -85,6 +85,6 @@ public class UserService {
                 .id(user.getId())
                 .role(Role.CUSTOMER)
                 .build();
-        userRepository.save(admin);
+        userRepository.save(customer);
     }
 }
