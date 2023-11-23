@@ -18,13 +18,9 @@ public class UserController {
 
     //@PreAuthorize("hasAuthority(T(com.marwan.UserService.repository.Role).MANAGER)")
     @PostMapping("/add-admin")
-    public ResponseEntity<String> addAdmin(
-            @RequestParam String firstName,
-            @RequestParam String lastName,
-            @RequestParam String email,
-            @RequestParam String password) {
+    public ResponseEntity<String> addAdmin(@RequestBody UserDTO userDTO) {
 
-        userService.addAdmin(firstName, lastName, email, password);
+        userService.addAdmin(userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail(), userDTO.getPassword());
 
         return ResponseEntity.ok("Admin was added successfully");
     }
