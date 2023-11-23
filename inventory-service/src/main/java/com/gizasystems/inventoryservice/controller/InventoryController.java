@@ -11,6 +11,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/inventory")
 public class InventoryController {
+    // TODO: 11/14/2023 nice to have use constructor injection
 
     // TODO el customer lw 3ayez yshof kol el products msh mafrood yshoof el quantity bardo
 
