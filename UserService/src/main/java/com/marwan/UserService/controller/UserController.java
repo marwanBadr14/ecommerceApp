@@ -18,13 +18,9 @@ public class UserController {
 
     //@PreAuthorize("hasAuthority(T(com.marwan.UserService.repository.Role).MANAGER)")
     @PostMapping("/add-admin")
-    public ResponseEntity<String> addAdmin(
-            @RequestParam String firstName,
-            @RequestParam String lastName,
-            @RequestParam String email,
-            @RequestParam String password) {
+    public ResponseEntity<String> addAdmin(@RequestBody UserDTO userDTO) {
 
-        userService.addAdmin(firstName, lastName, email, password);
+        userService.addAdmin(userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail(), userDTO.getPassword());
 
         return ResponseEntity.ok("Admin was added successfully");
     }
@@ -43,33 +39,11 @@ public class UserController {
         return ResponseEntity.ok("Admin was deleted successfully");
     }
 
-    @PutMapping("/promote")
-    public ResponseEntity<String> promoteUser(
-            @RequestParam("email") String email) {
-        try{
-            userService.promoteUser(email);
-        }
-        catch (Exception e){
-            System.out.println(e.getMessage());
-            throw new RuntimeException("User was not found, make sure you are providing the right email");
-        }
-
-        return ResponseEntity.ok("User was promoted successfully");
+    @GetMapping("/admins")
+    public ResponseEntity<List<UserDTO>> getAllAdmins() {
+        return ResponseEntity.ok(userService.getAllAdmins());
     }
 
-    @PutMapping("/demote")
-    public ResponseEntity<String> demoteUser(
-            @RequestParam("email") String email) {
-        try{
-            userService.demoteUser(email);
-        }
-        catch (Exception e){
-            System.out.println(e.getMessage());
-            throw new RuntimeException("User was not found, make sure you are providing the right email");
-        }
-
-        return ResponseEntity.ok("User was demoted successfully");
-    }
 
     @GetMapping("/get-user-email-by-id")
     public ResponseEntity<String> getUserEmailById(@RequestParam("id") Integer id) {

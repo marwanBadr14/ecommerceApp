@@ -50,19 +50,6 @@ public class UserService {
         userRepository.delete(admin);
     }
 
-    public void promoteUser(String email) {
-        Optional<User> userOp = userRepository.findByEmail(email);
-        User user = userOp.orElseThrow();
-        User admin = User.builder()
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .email(user.getEmail())
-                .password(user.getPassword())
-                .id(user.getId())
-                .role(Role.ADMIN)
-                .build();
-        userRepository.save(admin);
-    }
 
     public List<UserDTO> getAllUsers() {
         List<User> users = userRepository.findAll();
@@ -74,17 +61,10 @@ public class UserService {
         return userMapper.userEntityToDto(user);
     }
 
-    public void demoteUser(String email) {
-        Optional<User> userOp = userRepository.findByEmail(email);
-        User user = userOp.orElseThrow();
-        User customer = User.builder()
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .email(user.getEmail())
-                .password(user.getPassword())
-                .id(user.getId())
-                .role(Role.CUSTOMER)
-                .build();
-        userRepository.save(customer);
+
+    public List<UserDTO> getAllAdmins() {
+        List<User> admins = userRepository.findByRole(Role.ADMIN);
+
+        return userMapper.userEntityToDto(admins);
     }
 }

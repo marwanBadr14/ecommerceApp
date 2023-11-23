@@ -25,8 +25,7 @@ public class AuthoritiesManager {
     private void populateUrls() {
         urlRoles.put("/user/add-admin", "MANAGER");
         urlRoles.put("/user/delete-admin", "MANAGER");
-        urlRoles.put("/user/promote", "MANAGER");
-        urlRoles.put("/user/demote", "MANAGER");
+        urlRoles.put("/user/admins", "MANAGER");
         urlRoles.put("/user/all", "MANAGER");
         urlRoles.put("/user/{id}", "MANAGER");
         urlRoles.put("/purchase/get-purchase", "CUSTOMER-ADMIN-MANAGER");
