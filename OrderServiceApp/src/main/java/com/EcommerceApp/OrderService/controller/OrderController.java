@@ -24,7 +24,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/order")
 public class OrderController {
-
+    // TODO: 11/14/2023 nice to have use constructor injection
     @Autowired
     OrderService orderService;
     @Autowired
@@ -33,6 +33,7 @@ public class OrderController {
     OrderProducer orderProducer;
 
     @PostMapping
+    // TODO: 11/14/2023 dont take entity as input
     public ResponseEntity<OrderDTO> createOrder(@RequestBody Order order) {
         try {
             OrderDTO createdOrder = orderService.save(order);
@@ -70,6 +71,7 @@ public class OrderController {
 
     // Update an existing order
     @PutMapping("/{orderId}")
+    // TODO: 11/14/2023 dont take entity as input
     public ResponseEntity<OrderDTO> updateOrder(@PathVariable int orderId, @RequestBody Order updatedOrder) {
         try{
             OrderDTO updated = orderService.update(orderId,updatedOrder);

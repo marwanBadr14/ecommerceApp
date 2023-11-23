@@ -22,8 +22,7 @@ public class SignupService {
 
     private final JwtService jwtService;
 
-    @Autowired
-    private UserMapConvertor userMapConvertor;
+    private final UserMapConvertor userMapConvertor;
 
     public Object register(RegisterRequest request) throws IllegalAccessException {
 
@@ -49,6 +48,10 @@ public class SignupService {
         //var jwtToken = jwtService.generateToken(user);
 
         // returns the JWT token
-        return AuthenticationResponse.builder().token(jwtToken).build();
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .email(user.getEmail())
+                .role(user.getRole().toString())
+                .build();
     }
 }

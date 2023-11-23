@@ -2,7 +2,6 @@ package com.gizasystems.inventoryservice.controller;
 
 import com.gizasystems.inventoryservice.dto.ProductDto;
 import com.gizasystems.inventoryservice.service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +11,7 @@ import java.math.BigDecimal;
 @CrossOrigin(origins = "*")
 @RequestMapping("/products")
 public class ProductController {
+    // TODO: 11/14/2023 nice to have use constructor injection
 
     ProductService productService;
 

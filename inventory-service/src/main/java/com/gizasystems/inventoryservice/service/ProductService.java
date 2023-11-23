@@ -8,7 +8,6 @@ import com.gizasystems.inventoryservice.exception.ProductNotFoundException;
 import com.gizasystems.inventoryservice.mapper.ProductMapper;
 import com.gizasystems.inventoryservice.model.Category;
 import com.gizasystems.inventoryservice.model.Product;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
