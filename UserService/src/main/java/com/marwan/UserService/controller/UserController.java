@@ -43,33 +43,11 @@ public class UserController {
         return ResponseEntity.ok("Admin was deleted successfully");
     }
 
-    @PutMapping("/promote")
-    public ResponseEntity<String> promoteUser(
-            @RequestParam("email") String email) {
-        try{
-            userService.promoteUser(email);
-        }
-        catch (Exception e){
-            System.out.println(e.getMessage());
-            throw new RuntimeException("User was not found, make sure you are providing the right email");
-        }
-
-        return ResponseEntity.ok("User was promoted successfully");
+    @GetMapping("/admins")
+    public ResponseEntity<List<UserDTO>> getAllAdmins() {
+        return ResponseEntity.ok(userService.getAllAdmins());
     }
 
-    @PutMapping("/demote")
-    public ResponseEntity<String> demoteUser(
-            @RequestParam("email") String email) {
-        try{
-            userService.demoteUser(email);
-        }
-        catch (Exception e){
-            System.out.println(e.getMessage());
-            throw new RuntimeException("User was not found, make sure you are providing the right email");
-        }
-
-        return ResponseEntity.ok("User was demoted successfully");
-    }
 
     @GetMapping("/get-user-email-by-id")
     public ResponseEntity<String> getUserEmailById(@RequestParam("id") Integer id) {
