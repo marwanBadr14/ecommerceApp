@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrderItemService {
-    // TODO: 11/14/2023 use constructor injection 
+    // TODO: 11/14/2023 use constructor injection
     @Autowired
     private OrderItemDao orderItemDao;
 

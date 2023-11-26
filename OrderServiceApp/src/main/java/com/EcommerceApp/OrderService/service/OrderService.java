@@ -126,8 +126,8 @@ public class OrderService {
         if(updatedOrder.getOrderStatus()!=null)order.setOrderStatus(updatedOrder.getOrderStatus());
         if(updatedOrder.getOrderItems()!=null)order.setOrderItems(updatedOrder.getOrderItems());
         if(updatedOrder.getTotalAmount()!=null)order.setTotalAmount(updatedOrder.getTotalAmount());
-       save(order);
-       return orderMapper.convertToDTO(order);
+        save(order);
+        return orderMapper.convertToDTO(order);
     }
 
     public List<OrderItemDTO> submitOrder(List<OrderItemDTO> orderItemDTOS){
@@ -155,7 +155,7 @@ public class OrderService {
 //        }
 //
 //        purchaseServiceIClient.processPurchasesRequest(purchaseDTOS);
-          orderProducer.sendMessage(orderMapper.convertToEntity(orderDto));
+            orderProducer.sendMessage(orderMapper.convertToEntity(orderDto));
 //
             return orderDto.getOrderItems();
         }

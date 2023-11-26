@@ -45,8 +45,8 @@ public class UserController {
     }
 
 
-    @GetMapping("/get-user-email-by-id")
-    public ResponseEntity<String> getUserEmailById(@RequestParam("id") Integer id) {
+    @GetMapping("/get-user-email-by-id/{id}")
+    public ResponseEntity<String> getUserEmailById(@PathVariable Integer id) {
         String userEmail = userService.getUserEmailById(id);
 
         if (userEmail != null) {

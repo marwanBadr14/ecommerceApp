@@ -19,5 +19,4 @@ public class OrderDTO {
     private BigDecimal totalAmount;
     private Status orderStatus;
     private List<OrderItemDTO> orderItems;
-    //private List<Integer> orderItemsId;
 }

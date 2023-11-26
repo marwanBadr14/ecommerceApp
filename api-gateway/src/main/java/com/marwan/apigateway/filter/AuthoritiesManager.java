@@ -28,6 +28,7 @@ public class AuthoritiesManager {
         urlRoles.put("/user/admins", "MANAGER");
         urlRoles.put("/user/all", "MANAGER");
         urlRoles.put("/user/{id}", "MANAGER");
+        urlRoles.put("/user/get-user-email-by-id/{id}","CUSTOMER-ADMIN-MANAGER");
         urlRoles.put("/purchase/get-purchase", "CUSTOMER-ADMIN-MANAGER");
         urlRoles.put("/categories/all", "CUSTOMER-ADMIN-MANAGER");
         urlRoles.put("/categories/{id}'", "CUSTOMER-ADMIN-MANAGER");
