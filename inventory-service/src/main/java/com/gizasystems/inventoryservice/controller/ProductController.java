@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 
 @RestController
-@CrossOrigin(origins = "*")
 @RequestMapping("/products")
 public class ProductController {
     // TODO: 11/14/2023 nice to have use constructor injection

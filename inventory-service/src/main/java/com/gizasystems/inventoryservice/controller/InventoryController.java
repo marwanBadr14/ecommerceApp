@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "*")
 @RequestMapping("/inventory")
 public class InventoryController {
     // TODO: 11/14/2023 nice to have use constructor injection
@@ -33,8 +32,8 @@ public class InventoryController {
     }
 
     @PutMapping("/deduct")
-    public void deductFromStock(@RequestParam Integer id, @RequestParam Integer quantity){
-        inventoryService.deductFromStock(id,quantity);
+    public ResponseEntity<Boolean> deductFromStock(@RequestParam Integer id, @RequestParam Integer quantity){
+        return ResponseEntity.ok(inventoryService.deductFromStock(id,quantity));
     }
 
 }

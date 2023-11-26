@@ -53,6 +53,7 @@ public class LoginService {
                 .token(jwtToken)
                 .email(user.getEmail())
                 .role(user.getRole().toString().toLowerCase())
+                .id(user.getId())
                 .build();
     }
 

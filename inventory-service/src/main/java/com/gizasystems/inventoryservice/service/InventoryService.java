@@ -43,7 +43,7 @@ public class InventoryService {
 
 
     // Deduct from the stock of a product after purchasing
-    public void deductFromStock(Integer id, Integer quantity){
+    public Boolean deductFromStock(Integer id, Integer quantity){
         Optional<Product> product = inventoryDao.findById(id);
         if(product.isEmpty())
             throw new ProductNotFoundException("Couldn't find product with id #"+id);
@@ -56,7 +56,7 @@ public class InventoryService {
         int newQuantity = productFound.getQuantity()-quantity;
         productFound.setQuantity(newQuantity);
         inventoryDao.save(productFound);
-
+        return true;
     }
 
 }

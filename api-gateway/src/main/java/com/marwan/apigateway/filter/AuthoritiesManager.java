@@ -41,6 +41,10 @@ public class AuthoritiesManager {
         urlRoles.put("/products/edit/{id}", "ADMIN-MANAGER");
         urlRoles.put("/products/delete/{id}", "ADMIN-MANAGER");
         urlRoles.put("/inventory/all", "CUSTOMER-ADMIN-MANAGER");
+        urlRoles.put("/order/submit", "CUSTOMER");
+        urlRoles.put("/order/create", "CUSTOMER");
+
+
     }
 
 

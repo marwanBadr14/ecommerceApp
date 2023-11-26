@@ -20,9 +20,9 @@ public class OrderMapper {
                 .orderDate(order.getOrderDate())
                 .totalAmount(order.getTotalAmount())
                 .orderStatus(order.getOrderStatus())
-                .orderItems(order.getOrderItems().stream()
-                        .map(orderItemMapper::convertToDTO)
-                        .collect(Collectors.toList()))
+//                .orderItems(order.getOrderItems().stream()
+//                        .map(orderItemMapper::convertToDTO)
+//                        .collect(Collectors.toList()))
                 .build();
    }
 

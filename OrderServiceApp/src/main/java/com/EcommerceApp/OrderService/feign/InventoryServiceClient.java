@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 @FeignClient("INVENTORY-SERVICE")
 public interface InventoryServiceClient {
     @PutMapping("/inventory/deduct")
-    void deductFromStock(@RequestParam Integer id, @RequestParam Integer quantity);
+    ResponseEntity<Boolean> deductFromStock(@RequestParam Integer id, @RequestParam Integer quantity);
 
     @GetMapping("/products/price/{id}")
     ResponseEntity<BigDecimal> getProductPrice(@PathVariable Integer id);
