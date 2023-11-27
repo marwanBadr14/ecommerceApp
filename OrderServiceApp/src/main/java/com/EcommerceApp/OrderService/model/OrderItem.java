@@ -12,16 +12,17 @@ import java.math.BigDecimal;
 
 @Entity
 @Table(name = "order_items")
-@IdClass(OrderItemPK.class) // Specify the composite key class
 @Getter
 @Setter
-@EqualsAndHashCode
 public class OrderItem {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_item_id")
+    private Integer orderItemId;
+
     @Column(name = "order_id")
     private Integer orderId;
 
-    @Id
     @Column(name = "product_id")
     private Integer productId;
 
@@ -33,10 +34,8 @@ public class OrderItem {
 
 
     @ManyToOne
-    @JsonIgnore
-    @JoinColumn(name = "order_id") // This references the "order_id" column in the order_items table
-    private Order order; // This establishes the relationship
-
+    @JoinColumn(name = "order_id", insertable=false, updatable=false)
+    private Order order;
 
     public OrderItem(int orderId, int productId, int quantity, BigDecimal itemPrice) {
         this.orderId = orderId;

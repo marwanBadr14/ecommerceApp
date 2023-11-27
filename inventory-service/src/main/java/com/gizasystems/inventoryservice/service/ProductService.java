@@ -120,6 +120,8 @@ public class ProductService {
         if(product.isEmpty())
             throw new ProductNotFoundException("Couldn't find a product with id:"+id);
 
+        Optional<Category> category = categoryDao.findById(product.get().getCategoryId());
+        category.ifPresent(value -> value.getProductsId().remove(product.get().getId()));
         productDao.deleteById(id);
     }
 }

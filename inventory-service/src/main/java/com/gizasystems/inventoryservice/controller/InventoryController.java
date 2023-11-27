@@ -32,8 +32,8 @@ public class InventoryController {
     }
 
     @PutMapping("/deduct")
-    public void deductFromStock(@RequestParam Integer id, @RequestParam Integer quantity){
-        inventoryService.deductFromStock(id,quantity);
+    public ResponseEntity<Boolean> deductFromStock(@RequestParam Integer id, @RequestParam Integer quantity){
+        return ResponseEntity.ok(inventoryService.deductFromStock(id,quantity));
     }
 
 }

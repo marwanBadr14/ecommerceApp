@@ -3,12 +3,15 @@ package com.EcommerceApp.OrderService.service;
 import com.EcommerceApp.OrderService.dto.OrderDTO;
 import com.EcommerceApp.OrderService.dto.OrderItemDTO;
 import com.EcommerceApp.OrderService.exception.*;
+import com.EcommerceApp.OrderService.feign.InventoryServiceClient;
 import com.EcommerceApp.OrderService.feign.PurchaseServiceIClient;
 import com.EcommerceApp.OrderService.kafka.OrderProducer;
+import com.EcommerceApp.OrderService.mapper.OrderItemMapper;
 import com.EcommerceApp.OrderService.mapper.OrderMapper;
 import com.EcommerceApp.OrderService.model.Order;
 import com.EcommerceApp.OrderService.Status;
 import com.EcommerceApp.OrderService.dao.OrderDao;
+import com.EcommerceApp.OrderService.model.OrderItem;
 import com.gizasystems.purchasingservice.dto.PurchaseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,19 +27,21 @@ import java.util.stream.Collectors;
 @Service
 public class OrderService {
 
-    @Autowired
     OrderDao orderDao;
+    InventoryServiceClient inventoryServiceClient;
+    OrderMapper orderMapper;
+    PurchaseServiceIClient purchaseServiceIClient;
+    OrderProducer orderProducer;
+    OrderItemMapper orderItemMapper;
 
-
-    @Autowired
-    private OrderMapper orderMapper;
-
-    @Autowired
-    private PurchaseServiceIClient purchaseServiceIClient;
-
-    @Autowired
-    private OrderProducer orderProducer;
-
+    public OrderService(OrderDao orderDao, InventoryServiceClient inventoryServiceClient, OrderMapper orderMapper, PurchaseServiceIClient purchaseServiceIClient, OrderProducer orderProducer, OrderItemMapper orderItemMapper) {
+        this.orderDao = orderDao;
+        this.inventoryServiceClient = inventoryServiceClient;
+        this.orderMapper = orderMapper;
+        this.purchaseServiceIClient = purchaseServiceIClient;
+        this.orderProducer = orderProducer;
+        this.orderItemMapper = orderItemMapper;
+    }
 
     public OrderDTO save(Order order) {
         return orderMapper.convertToDTO(orderDao.save(order));
@@ -65,7 +70,6 @@ public class OrderService {
         }
     }
 
-
     public List<OrderDTO> findByCustomerId(int customerId) {
         validateCustomerId(customerId);
         return orderDao.findByCustomerId(customerId).stream().map(orderMapper::convertToDTO).collect(Collectors.toList());
@@ -79,12 +83,12 @@ public class OrderService {
         return orderDao.findByTotalAmountGreaterThan(amount).stream().map(orderMapper::convertToDTO).collect(Collectors.toList());
     }
 
-    public List<OrderDTO> findByOrderDateBetween(LocalDateTime startDate, LocalDateTime endDate) {
-        if(startDate.isAfter(endDate)){
-            throw new InvalidDateRangeException("Invalid date range: Start date must be on or before the end date.");
-        }
-        return orderDao.findByOrderDateBetween(startDate,endDate).stream().map(orderMapper::convertToDTO).collect(Collectors.toList());
-    }
+//    public List<OrderDTO> findByOrderDateBetween(LocalDateTime startDate, LocalDateTime endDate) {
+//        if(startDate.isAfter(endDate)){
+//            throw new InvalidDateRangeException("Invalid date range: Start date must be on or before the end date.");
+//        }
+//        return orderDao.findByOrderDateBetween(startDate,endDate).stream().map(orderMapper::convertToDTO).collect(Collectors.toList());
+//    }
 
     public boolean existsById(int orderId) {
         return orderDao.existsById(orderId);
@@ -122,7 +126,44 @@ public class OrderService {
         if(updatedOrder.getOrderStatus()!=null)order.setOrderStatus(updatedOrder.getOrderStatus());
         if(updatedOrder.getOrderItems()!=null)order.setOrderItems(updatedOrder.getOrderItems());
         if(updatedOrder.getTotalAmount()!=null)order.setTotalAmount(updatedOrder.getTotalAmount());
-       save(order);
-       return orderMapper.convertToDTO(order);
+        save(order);
+        return orderMapper.convertToDTO(order);
     }
+
+    public List<OrderItemDTO> submitOrder(List<OrderItemDTO> orderItemDTOS){
+        Integer orderId = orderItemDTOS.get(0).getOrderId();
+        if(existsById(orderId)) {
+            OrderDTO orderDto = findById(orderId);
+            List<OrderItemDTO> purchasedProducts = new ArrayList<>();
+            BigDecimal totalAmount = BigDecimal.valueOf(0.0);
+            for (OrderItemDTO orderItemDTO : orderItemDTOS) {
+                if (Boolean.TRUE.equals((inventoryServiceClient.deductFromStock(orderItemDTO.getProductId(), orderItemDTO.getQuantity())).getBody())) {
+                    purchasedProducts.add(orderItemDTO);
+                    orderItemDTO.setItemPrice(inventoryServiceClient.getProductPrice(orderItemDTO.getProductId()).getBody());
+                    totalAmount = totalAmount.add(orderItemDTO.getItemPrice().multiply(BigDecimal.valueOf(orderItemDTO.getQuantity())));
+                }
+            }
+
+            orderDto.setOrderItems(purchasedProducts);
+            orderDto.setTotalAmount(totalAmount);
+            orderDao.save(orderMapper.convertToEntity(orderDto));
+
+
+//        List<PurchaseDTO> purchaseDTOS = new ArrayList<>();
+//        for (OrderItemDTO item:orderDTO.getOrderItems()) {
+//            purchaseDTOS.add(new PurchaseDTO(item.getProductId(), item.getQuantity()));
+//        }
+//
+//        purchaseServiceIClient.processPurchasesRequest(purchaseDTOS);
+            orderProducer.sendMessage(orderMapper.convertToEntity(orderDto));
+//
+            return orderDto.getOrderItems();
+        }
+
+        throw new OrderNotFoundException("Order with ID " + orderId + " not found");
+
+    }
+
+
+
 }

@@ -37,6 +37,7 @@ public class UserService {
     }
 
     public String getUserEmailById(Integer id) {
+
         User user = userRepository.getReferenceById(id);
 
         UserDTO userDTO = userMapper.userEntityToDto(user);

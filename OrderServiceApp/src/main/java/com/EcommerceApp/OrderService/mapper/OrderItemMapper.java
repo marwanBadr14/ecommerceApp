@@ -1,8 +1,13 @@
 package com.EcommerceApp.OrderService.mapper;
 
 import com.EcommerceApp.OrderService.dto.OrderItemDTO;
+import com.EcommerceApp.OrderService.model.Order;
 import com.EcommerceApp.OrderService.model.OrderItem;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class OrderItemMapper {
@@ -23,4 +28,19 @@ public class OrderItemMapper {
         orderItem.setItemPrice(orderItemDTO.getItemPrice());
         return orderItem;
     }
+
+    public List<OrderItemDTO> convertToDTO(List<OrderItem> orderItems){
+        return Optional.ofNullable(orderItems)
+                .map(list -> list.stream()
+                        .map(orderItem -> OrderItemDTO.builder()
+                                .orderId(orderItem.getOrderId())
+                                .productId(orderItem.getProductId())
+                                .quantity(orderItem.getQuantity())
+                                .itemPrice(orderItem.getItemPrice())
+                                .build())
+                        .collect(Collectors.toList()))
+                .orElse(null);
+    }
+
+
 }
