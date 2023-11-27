@@ -1,7 +1,7 @@
 package com.EcommerceApp.OrderService.service;
 
-import com.EcommerceApp.OrderService.dto.OrderDTO;
-import com.EcommerceApp.OrderService.dto.OrderItemDTO;
+//import com.EcommerceApp.OrderService.dto.OrderDTO;
+//import com.EcommerceApp.OrderService.dto.OrderItemDTO;
 import com.EcommerceApp.OrderService.exception.*;
 import com.EcommerceApp.OrderService.feign.InventoryServiceClient;
 import com.EcommerceApp.OrderService.feign.PurchaseServiceIClient;
@@ -11,13 +11,10 @@ import com.EcommerceApp.OrderService.mapper.OrderMapper;
 import com.EcommerceApp.OrderService.model.Order;
 import com.EcommerceApp.OrderService.Status;
 import com.EcommerceApp.OrderService.dao.OrderDao;
-import com.EcommerceApp.OrderService.model.OrderItem;
-import com.gizasystems.purchasingservice.dto.PurchaseDTO;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.dto.OrderDTO;
+import org.dto.OrderItemDTO;
+import org.dto.PurchaseDTO;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -149,15 +146,15 @@ public class OrderService {
             orderDao.save(orderMapper.convertToEntity(orderDto));
 
 
-//        List<PurchaseDTO> purchaseDTOS = new ArrayList<>();
-//        for (OrderItemDTO item:orderDTO.getOrderItems()) {
-//            purchaseDTOS.add(new PurchaseDTO(item.getProductId(), item.getQuantity()));
-//        }
+        List<PurchaseDTO> purchaseDTOS = new ArrayList<>();
+        for (OrderItemDTO item:orderDto.getOrderItems()) {
+            purchaseDTOS.add(new PurchaseDTO(item.getProductId(), item.getQuantity()));
+        }
+
+        purchaseServiceIClient.processPurchasesRequest(purchaseDTOS);
+        orderProducer.sendMessage(orderMapper.convertToEntity(orderDto));
 //
-//        purchaseServiceIClient.processPurchasesRequest(purchaseDTOS);
-            orderProducer.sendMessage(orderMapper.convertToEntity(orderDto));
-//
-            return orderDto.getOrderItems();
+        return orderDto.getOrderItems();
         }
 
         throw new OrderNotFoundException("Order with ID " + orderId + " not found");

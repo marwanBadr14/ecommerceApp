@@ -14,9 +14,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-
-    private final JwtAuthenticationFilter jwtAuthFilter;
-    private final AuthenticationProvider authenticationProvider;
+//
+//    private final JwtAuthenticationFilter jwtAuthFilter;
+//    private final AuthenticationProvider authenticationProvider;
 
 
     // TODO: Transfer to API-Gateway
@@ -25,16 +25,8 @@ public class SecurityConfig {
         http
                 .csrf()
                 .disable()
-                .authorizeHttpRequests()
-                .requestMatchers("/user/signup", "/user/login").permitAll()
-                .anyRequest()
-                .authenticated()
-                .and()
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         return http.build();
     }

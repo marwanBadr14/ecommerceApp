@@ -1,7 +1,5 @@
 package com.EcommerceApp.OrderService.controller;
 
-import com.EcommerceApp.OrderService.dto.OrderDTO;
-import com.EcommerceApp.OrderService.dto.OrderItemDTO;
 import com.EcommerceApp.OrderService.exception.InvalidCustomerIdException;
 import com.EcommerceApp.OrderService.exception.InvalidDateRangeException;
 import com.EcommerceApp.OrderService.exception.InvalidOrderIdException;
@@ -12,6 +10,8 @@ import com.EcommerceApp.OrderService.model.Order;
 import com.EcommerceApp.OrderService.Status;
 import com.EcommerceApp.OrderService.service.OrderService;
 import jakarta.ws.rs.POST;
+import org.dto.OrderDTO;
+import org.dto.OrderItemDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;

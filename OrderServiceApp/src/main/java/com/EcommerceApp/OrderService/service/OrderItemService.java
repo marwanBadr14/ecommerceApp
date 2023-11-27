@@ -1,7 +1,5 @@
 package com.EcommerceApp.OrderService.service;
 
-import com.EcommerceApp.OrderService.dto.OrderDTO;
-import com.EcommerceApp.OrderService.dto.OrderItemDTO;
 import com.EcommerceApp.OrderService.dto.OrderItemPK;
 import com.EcommerceApp.OrderService.dao.OrderItemDao;
 import com.EcommerceApp.OrderService.exception.*;
@@ -10,6 +8,8 @@ import com.EcommerceApp.OrderService.mapper.OrderItemMapper;
 import com.EcommerceApp.OrderService.mapper.OrderMapper;
 import com.EcommerceApp.OrderService.model.OrderItem;
 
+import org.dto.OrderDTO;
+import org.dto.OrderItemDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
