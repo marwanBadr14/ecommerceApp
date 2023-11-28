@@ -124,11 +124,10 @@ public class OrderService {
                     orderItemDTO.setItemPrice(inventoryServiceClient.getProductPrice(orderItemDTO.getProductId()).getBody());
                     purchaseDTOS.add(new PurchaseDTO(orderItemDTO.getProductId(), orderItemDTO.getQuantity()));
                     totalAmount = totalAmount.add(orderItemDTO.getItemPrice().multiply(BigDecimal.valueOf(orderItemDTO.getQuantity())));
-                    orderItemDao.save(orderItemMapper.convertToEntity(orderItemDTO));
                 }
             }
 
-
+            orderDto.setOrderItems(purchasedProducts);
             orderDto.setTotalAmount(totalAmount);
             orderDao.save(orderMapper.convertToEntity(orderDto));
 

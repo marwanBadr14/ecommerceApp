@@ -1,10 +1,10 @@
 package com.gizasystems.notificationservice.kafka;
 
-import com.EcommerceApp.OrderService.model.Order;
-import com.EcommerceApp.OrderService.model.OrderItem;
+
 import com.gizasystems.notificationservice.feign.InventoryServiceInterface;
 import com.gizasystems.notificationservice.feign.UserServiceInterface;
 import com.gizasystems.notificationservice.service.EmailSenderService;
+
 import org.dto.OrderDTO;
 import org.dto.OrderItemDTO;
 import org.slf4j.Logger;
