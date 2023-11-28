@@ -30,14 +30,15 @@ public class OrderMapper {
 
     public Order convertToEntity(OrderDTO orderDTO) {
         Order order = new Order();
-        order.setOrderId(orderDTO.getOrderId());
+        if(orderDTO.getOrderId() != null)
+            order.setOrderId(orderDTO.getOrderId());
         order.setCustomerId(orderDTO.getCustomerId());
         order.setOrderDate(orderDTO.getOrderDate());
         order.setTotalAmount(orderDTO.getTotalAmount());
 //        order.setOrderStatus(orderDTO.getOrderStatus());
-        order.setOrderItems(orderDTO.getOrderItems().stream()
-                .map(orderItemMapper::convertToEntity)
-                .collect(Collectors.toList()));
+//        order.setOrderItems(orderDTO.getOrderItems().stream()
+//                .map(orderItemMapper::convertToEntity)
+//                .collect(Collectors.toList()));
         return order;
     }
 }

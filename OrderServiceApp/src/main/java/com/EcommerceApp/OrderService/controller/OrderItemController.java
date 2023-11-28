@@ -1,11 +1,9 @@
 package com.EcommerceApp.OrderService.controller;
 
 import com.EcommerceApp.OrderService.exception.*;
-import com.EcommerceApp.OrderService.feign.InventoryServiceClient;
-import com.EcommerceApp.OrderService.model.OrderItem;
+import com.EcommerceApp.OrderService.mapper.OrderItemMapper;
 import com.EcommerceApp.OrderService.service.OrderItemService;
 import org.dto.OrderItemDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,23 +15,13 @@ public class OrderItemController {
 
 
     private final OrderItemService orderItemService;
+    private final OrderItemMapper orderItemMapper;
 
-    public OrderItemController(OrderItemService orderItemService) {
+    public OrderItemController(OrderItemService orderItemService, OrderItemMapper orderItemMapper) {
         this.orderItemService = orderItemService;
+        this.orderItemMapper = orderItemMapper;
     }
 
-    // Create a new order item
-    @PostMapping
-    public ResponseEntity<OrderItemDTO> createOrderItem(@RequestBody OrderItem orderItem) {
-        try {
-            OrderItemDTO createdOrderItem = orderItemService.createOrderItem(orderItem);
-            return new ResponseEntity<>(createdOrderItem, HttpStatus.CREATED);
-        } catch (OrderNotFoundException e){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
 
     @GetMapping("/{orderId}")
     public ResponseEntity<List<OrderItemDTO>> getOrderItems(@PathVariable Integer orderId) {
@@ -65,9 +53,9 @@ public class OrderItemController {
 
     // Update an order item
     @PutMapping("/{id}")
-    public ResponseEntity<OrderItemDTO> updateOrderItem(@PathVariable Integer id, @RequestBody OrderItem orderItem) {
+    public ResponseEntity<OrderItemDTO> updateOrderItem(@PathVariable Integer id, @RequestBody OrderItemDTO orderItemDTO) {
         try {
-            OrderItemDTO updatedOrderItem = orderItemService.updateOrderItem(id, orderItem);
+            OrderItemDTO updatedOrderItem = orderItemService.updateOrderItem(id, orderItemMapper.convertToEntity(orderItemDTO));
             return new ResponseEntity<>(updatedOrderItem, HttpStatus.OK);
         } catch (InvalidOrderIdException | InvalidProductIdException | OrderIdModificationException | ProductIdModificationException e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

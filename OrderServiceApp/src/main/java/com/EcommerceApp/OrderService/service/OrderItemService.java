@@ -32,16 +32,6 @@ public class OrderItemService {
         this.orderMapper = orderMapper;
     }
 
-    public OrderItemDTO createOrderItem(OrderItem orderItem) {
-        OrderDTO order = orderService.findById(orderItem.getOrderId());
-        orderItem.setItemPrice(inventoryServiceClient.getProductPrice(orderItem.getProductId()).getBody());
-        order.setTotalAmount(order.getTotalAmount()
-                .add(orderItem.getItemPrice().multiply(BigDecimal.valueOf(orderItem.getQuantity()))));
-        orderService.save(orderMapper.convertToEntity(order));
-        inventoryServiceClient.deductFromStock(orderItem.getProductId(),orderItem.getQuantity());
-        OrderItem createdOrderItem = orderItemDao.save(orderItem);
-        return orderItemMapper.convertToDTO(createdOrderItem);
-    }
 
 
     public OrderItemDTO getOrderItemById(Integer id) {
