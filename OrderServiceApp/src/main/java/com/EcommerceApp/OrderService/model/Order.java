@@ -1,7 +1,6 @@
 package com.EcommerceApp.OrderService.model;
 import com.EcommerceApp.OrderService.Status;
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,27 +23,25 @@ public class Order {
     private Integer customerId;
 
     @Column(name = "order_date")
-    private String orderDate;
+    private LocalDateTime orderDate;
 
     @Column(name = "total_amount", precision = 10, scale = 2)
     private BigDecimal totalAmount;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "order_status", length = 20)
-    private Status orderStatus;
+//    @Enumerated(EnumType.STRING)
+//    @Column(name = "order_status", length = 20)
+//    private Status orderStatus;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<OrderItem> orderItems = new ArrayList<>();
 
-//    @ElementCollection
-//    private List<Integer> orderItemsId;
 
 
-    public Order(int customerId, String orderDate, BigDecimal totalAmount, Status orderStatus) {
+    public Order(int customerId, LocalDateTime orderDate, BigDecimal totalAmount, Status orderStatus) {
         this.customerId = customerId;
         this.orderDate = orderDate;
         this.totalAmount = totalAmount;
-        this.orderStatus = orderStatus;
+//        this.orderStatus = orderStatus;
     }
 
     public Order() {
@@ -56,10 +53,10 @@ public class Order {
         return "Order{" +
                 "orderId=" + orderId +
                 ", customerId=" + customerId +
-                //    ", orderDate=" + orderDate +
+                //", orderDate=" + orderDate +
                 ", totalAmount=" + totalAmount +
-                ", orderStatus=" + orderStatus +
-                //    ", orderItems=" + orderItems +
+                //", orderStatus=" + orderStatus +
+                //", orderItems=" + orderItems +
                 '}';
     }
 

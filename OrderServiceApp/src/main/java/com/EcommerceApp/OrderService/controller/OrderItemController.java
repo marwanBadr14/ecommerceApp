@@ -15,11 +15,12 @@ import java.util.List;
 @RequestMapping("/order/items")
 public class OrderItemController {
 
-    @Autowired
-    private OrderItemService orderItemService;
 
-    @Autowired
-    InventoryServiceClient inventoryServiceClient;
+    private final OrderItemService orderItemService;
+
+    public OrderItemController(OrderItemService orderItemService) {
+        this.orderItemService = orderItemService;
+    }
 
     // Create a new order item
     @PostMapping
@@ -47,10 +48,10 @@ public class OrderItemController {
         }
     }
 
-    @GetMapping("/{orderId}/{productId}")
-    public ResponseEntity<OrderItemDTO> getOrderItem(@PathVariable Integer orderId, @PathVariable Integer productId) {
+    @GetMapping("/{id}")
+    public ResponseEntity<OrderItemDTO> getOrderItem(@PathVariable Integer id) {
         try {
-            OrderItemDTO orderItemDTO = orderItemService.getOrderItemById(orderId, productId);
+            OrderItemDTO orderItemDTO = orderItemService.getOrderItemById(id);
             return new ResponseEntity<>(orderItemDTO, HttpStatus.OK);
         }catch (InvalidOrderIdException | InvalidProductIdException e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -63,10 +64,10 @@ public class OrderItemController {
     }
 
     // Update an order item
-    @PutMapping("/{orderId}/{productId}")
-    public ResponseEntity<OrderItemDTO> updateOrderItem(@PathVariable Integer orderId, @PathVariable Integer productId, @RequestBody OrderItem orderItem) {
+    @PutMapping("/{id}")
+    public ResponseEntity<OrderItemDTO> updateOrderItem(@PathVariable Integer id, @RequestBody OrderItem orderItem) {
         try {
-            OrderItemDTO updatedOrderItem = orderItemService.updateOrderItem(orderId, productId, orderItem);
+            OrderItemDTO updatedOrderItem = orderItemService.updateOrderItem(id, orderItem);
             return new ResponseEntity<>(updatedOrderItem, HttpStatus.OK);
         } catch (InvalidOrderIdException | InvalidProductIdException | OrderIdModificationException | ProductIdModificationException e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -78,10 +79,10 @@ public class OrderItemController {
     }
 
     // Delete an order item by ID
-    @DeleteMapping("/{orderId}/{productId}")
-    public ResponseEntity<String> deleteOrderItem(@PathVariable Integer orderId, @PathVariable Integer productId) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteOrderItem(@PathVariable Integer id) {
         try {
-            orderItemService.deleteOrderItem(orderId, productId);
+            orderItemService.deleteOrderItem(id);
             return new ResponseEntity<>("Order item deleted successfully", HttpStatus.NO_CONTENT);
         } catch (OrderItemNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);

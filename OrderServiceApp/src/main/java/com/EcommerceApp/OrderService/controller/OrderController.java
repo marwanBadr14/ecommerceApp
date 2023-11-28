@@ -9,10 +9,9 @@ import com.EcommerceApp.OrderService.feign.PurchaseServiceIClient;
 import com.EcommerceApp.OrderService.model.Order;
 import com.EcommerceApp.OrderService.Status;
 import com.EcommerceApp.OrderService.service.OrderService;
-import jakarta.ws.rs.POST;
+
 import org.dto.OrderDTO;
 import org.dto.OrderItemDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -138,35 +137,22 @@ public class OrderController {
     }
 
     // Get orders within a date range
-//    @GetMapping("/dateRange")
-//    public ResponseEntity<List<OrderDTO>> getOrdersWithinDateRange(
-//            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime startDate,
-//            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime endDate
-//    ) {
-//        try {
-//            List<OrderDTO> orders = orderService.findByOrderDateBetween(startDate, endDate);
-//            return new ResponseEntity<>(orders, HttpStatus.OK);
-//        }catch (InvalidDateRangeException e){
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//        }
-//        catch (Exception e){
-//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-
-    @GetMapping("/{orderId}/execute")
-    public ResponseEntity<List<OrderItemDTO>> executeOrder(@PathVariable int orderId) {
-        try{
-            List<OrderItemDTO> orderItemDTOS =  orderService.executeOrder(orderId);
-            return new ResponseEntity<>(orderItemDTOS, HttpStatus.OK);
-        }catch (InvalidOrderIdException e){
+    @GetMapping("/dateRange")
+    public ResponseEntity<List<OrderDTO>> getOrdersWithinDateRange(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime endDate
+    ) {
+        try {
+            List<OrderDTO> orders = orderService.findByOrderDateBetween(startDate, endDate);
+            return new ResponseEntity<>(orders, HttpStatus.OK);
+        }catch (InvalidDateRangeException e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }catch (OrderNotFoundException e){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }catch (Exception e){
+        }
+        catch (Exception e){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
 
     @PostMapping("/submit")

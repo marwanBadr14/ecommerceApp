@@ -1,9 +1,6 @@
 package com.EcommerceApp.OrderService.model;
-import com.EcommerceApp.OrderService.dto.OrderItemPK;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -32,7 +29,6 @@ public class OrderItem {
     @Column(name = "item_price", precision = 10, scale = 2, nullable = false)
     private BigDecimal itemPrice;
 
-
     @ManyToOne
     @JoinColumn(name = "order_id", insertable=false, updatable=false)
     private Order order;
@@ -50,7 +46,8 @@ public class OrderItem {
     @Override
     public String toString() {
         return "OrderItem{" +
-                "orderId=" + orderId +
+                "orderItemId=" + orderItemId +
+                ", orderId=" + orderId +
                 ", productId=" + productId +
                 ", quantity=" + quantity +
                 ", itemPrice=" + itemPrice +

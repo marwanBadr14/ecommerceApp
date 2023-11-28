@@ -1,7 +1,5 @@
 package com.EcommerceApp.OrderService.service;
 
-//import com.EcommerceApp.OrderService.dto.OrderDTO;
-//import com.EcommerceApp.OrderService.dto.OrderItemDTO;
 import com.EcommerceApp.OrderService.exception.*;
 import com.EcommerceApp.OrderService.feign.InventoryServiceClient;
 import com.EcommerceApp.OrderService.feign.PurchaseServiceIClient;
@@ -80,32 +78,15 @@ public class OrderService {
         return orderDao.findByTotalAmountGreaterThan(amount).stream().map(orderMapper::convertToDTO).collect(Collectors.toList());
     }
 
-//    public List<OrderDTO> findByOrderDateBetween(LocalDateTime startDate, LocalDateTime endDate) {
-//        if(startDate.isAfter(endDate)){
-//            throw new InvalidDateRangeException("Invalid date range: Start date must be on or before the end date.");
-//        }
-//        return orderDao.findByOrderDateBetween(startDate,endDate).stream().map(orderMapper::convertToDTO).collect(Collectors.toList());
-//    }
+    public List<OrderDTO> findByOrderDateBetween(LocalDateTime startDate, LocalDateTime endDate) {
+        if(startDate.isAfter(endDate)){
+            throw new InvalidDateRangeException("Invalid date range: Start date must be on or before the end date.");
+        }
+        return orderDao.findByOrderDateBetween(startDate,endDate).stream().map(orderMapper::convertToDTO).collect(Collectors.toList());
+    }
 
     public boolean existsById(int orderId) {
         return orderDao.existsById(orderId);
-    }
-
-    //TODO: test this function
-    public List<OrderItemDTO> executeOrder(int orderId) {
-        validateOrderId(orderId);
-        if (existsById(orderId)) {
-            OrderDTO order = findById(orderId);
-            List<PurchaseDTO> purchaseDTOS = new ArrayList<>();
-            for (OrderItemDTO item:order.getOrderItems()) {
-                purchaseDTOS.add(new PurchaseDTO(item.getProductId(), item.getQuantity()));
-            }
-            purchaseServiceIClient.processPurchasesRequest(purchaseDTOS);
-            orderProducer.sendMessage(orderMapper.convertToEntity(order));
-            return order.getOrderItems();
-        } else {
-            throw new OrderNotFoundException("Order with ID " + orderId + " not found");
-        }
     }
 
     private void validateOrderId(Integer orderId){
@@ -120,7 +101,7 @@ public class OrderService {
     public OrderDTO update(int orderId, Order updatedOrder) {
         OrderDTO orderDTO = findById(orderId);
         Order order = orderMapper.convertToEntity(orderDTO);
-        if(updatedOrder.getOrderStatus()!=null)order.setOrderStatus(updatedOrder.getOrderStatus());
+//        if(updatedOrder.getOrderStatus()!=null)order.setOrderStatus(updatedOrder.getOrderStatus());
         if(updatedOrder.getOrderItems()!=null)order.setOrderItems(updatedOrder.getOrderItems());
         if(updatedOrder.getTotalAmount()!=null)order.setTotalAmount(updatedOrder.getTotalAmount());
         save(order);
@@ -152,8 +133,8 @@ public class OrderService {
         }
 
         purchaseServiceIClient.processPurchasesRequest(purchaseDTOS);
-        orderProducer.sendMessage(orderMapper.convertToEntity(orderDto));
-//
+        orderProducer.sendMessage(orderDto);
+
         return orderDto.getOrderItems();
         }
 
