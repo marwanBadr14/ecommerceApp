@@ -1,6 +1,6 @@
 package com.gizasystems.purchasingservice.service;
 
-import com.gizasystems.purchasingservice.dto.PurchaseDTO;
+import org.dto.PurchaseDTO;
 
 import java.util.List;
 

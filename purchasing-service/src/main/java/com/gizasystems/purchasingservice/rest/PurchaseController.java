@@ -1,6 +1,6 @@
 package com.gizasystems.purchasingservice.rest;
 
-import com.gizasystems.purchasingservice.dto.PurchaseDTO;
+import org.dto.PurchaseDTO;
 import com.gizasystems.purchasingservice.exception.PurchaseNotFoundException;
 import com.gizasystems.purchasingservice.service.PurchaseService;
 import jakarta.validation.Valid;
