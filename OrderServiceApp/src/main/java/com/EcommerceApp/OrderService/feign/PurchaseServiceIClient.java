@@ -1,8 +1,7 @@
 package com.EcommerceApp.OrderService.feign;
 
 
-import com.gizasystems.purchasingservice.dto.PurchaseDTO;
-import com.gizasystems.purchasingservice.model.Purchase;
+import org.dto.PurchaseDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,5 +13,5 @@ import java.util.List;
 
 public interface PurchaseServiceIClient {
     @PostMapping("/purchases/increase-purchases")
-    ResponseEntity<List<Purchase>> processPurchasesRequest(@RequestBody List<PurchaseDTO> purchaseDTOs);
+    ResponseEntity<List<PurchaseDTO>> processPurchasesRequest(@RequestBody List<PurchaseDTO> purchaseDTOs);
 }

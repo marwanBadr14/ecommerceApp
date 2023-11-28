@@ -1,8 +1,9 @@
 package com.EcommerceApp.OrderService.mapper;
 
-import com.EcommerceApp.OrderService.dto.OrderItemDTO;
+//import com.EcommerceApp.OrderService.dto.OrderItemDTO;
 import com.EcommerceApp.OrderService.model.Order;
 import com.EcommerceApp.OrderService.model.OrderItem;
+import org.dto.OrderItemDTO;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

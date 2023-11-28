@@ -11,9 +11,9 @@ import java.math.BigDecimal;
 @FeignClient("INVENTORY-SERVICE")
 public interface InventoryServiceInterface {
 
-    @GetMapping("/price/{id}")
+    @GetMapping("/products/price/{id}")
     public ResponseEntity<BigDecimal> getProductPrice(@PathVariable Integer id);
 
-    @GetMapping("/name/{id}")
+    @GetMapping("/products/name/{id}")
     public ResponseEntity<String> getProductName(@PathVariable Integer id);
 }

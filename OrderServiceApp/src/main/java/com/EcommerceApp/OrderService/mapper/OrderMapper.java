@@ -1,7 +1,9 @@
 package com.EcommerceApp.OrderService.mapper;
 
 import com.EcommerceApp.OrderService.model.Order;
-import com.EcommerceApp.OrderService.dto.OrderDTO;
+//import com.EcommerceApp.OrderService.dto.OrderDTO;
+
+import org.dto.OrderDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +21,7 @@ public class OrderMapper {
                 .customerId(order.getCustomerId())
                 .orderDate(order.getOrderDate())
                 .totalAmount(order.getTotalAmount())
-                .orderStatus(order.getOrderStatus())
+//                .orderStatus(order.getOrderStatus())
 //                .orderItems(order.getOrderItems().stream()
 //                        .map(orderItemMapper::convertToDTO)
 //                        .collect(Collectors.toList()))
@@ -32,7 +34,7 @@ public class OrderMapper {
         order.setCustomerId(orderDTO.getCustomerId());
         order.setOrderDate(orderDTO.getOrderDate());
         order.setTotalAmount(orderDTO.getTotalAmount());
-        order.setOrderStatus(orderDTO.getOrderStatus());
+//        order.setOrderStatus(orderDTO.getOrderStatus());
         order.setOrderItems(orderDTO.getOrderItems().stream()
                 .map(orderItemMapper::convertToEntity)
                 .collect(Collectors.toList()));

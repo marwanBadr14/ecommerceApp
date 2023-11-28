@@ -34,8 +34,8 @@ public class OrderConsumer {
         int index = 1;
         for (OrderItem orderItem: orderItems){
             body.append("Item #").append(index).append("\n");
-            body.append("product's name: ").append(inventoryServiceInterface.getProductName(orderItem.getProductId())).append("\n");
-            body.append("cost: ").append(inventoryServiceInterface.getProductPrice(orderItem.getProductId())).append("\n");
+            body.append("product's name: ").append(inventoryServiceInterface.getProductName(orderItem.getProductId()).getBody()).append("\n");
+            body.append("cost: ").append(inventoryServiceInterface.getProductPrice(orderItem.getProductId()).getBody()).append("\n");
             body.append("quantity: ").append(orderItem.getQuantity()).append("\n\n");
             ++index;
         }
