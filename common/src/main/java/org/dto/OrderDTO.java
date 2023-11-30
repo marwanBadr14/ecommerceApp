@@ -19,4 +19,15 @@ public class OrderDTO {
     private BigDecimal totalAmount;
  //   private Status orderStatus;
     private List<OrderItemDTO> orderItems;
+
+    @Override
+    public String toString() {
+        return "OrderDTO{" +
+                "orderId=" + orderId +
+                ", customerId=" + customerId +
+                ", orderDate=" + orderDate +
+                ", totalAmount=" + totalAmount +
+                ", orderItems=" + orderItems +
+                '}';
+    }
 }
