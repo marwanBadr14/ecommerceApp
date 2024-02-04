@@ -1,0 +1,15 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog">
+    <changeSet id="ddl-main" author="Khaled Ellethy">
+        <createTable tableName="purchase">
+            <column name="id" type="int">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="num_of_purchases" type="int" >
+                <constraints nullable="false" />
+            </column>
+            <column name="product_id" type="int" >
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

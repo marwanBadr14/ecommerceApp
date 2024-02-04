@@ -1,0 +1,3 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog">
+    <include file="db.liquibase.changelog/ddl/ddl-changelog.xml" />
+</databaseChangeLog>
