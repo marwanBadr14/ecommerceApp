@@ -1,37 +1,76 @@
 package com.gizasystems.inventoryservice.service;
 
-
 import com.gizasystems.inventoryservice.dao.CategoryDao;
-import com.gizasystems.inventoryservice.entity.ProductCategory;
+import com.gizasystems.inventoryservice.dto.CategoryDto;
+import com.gizasystems.inventoryservice.exception.CategoryNotFoundException;
+import com.gizasystems.inventoryservice.mapper.CategoryMapper;
+import com.gizasystems.inventoryservice.model.Category;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CategoryService {
 
-    @Autowired
     CategoryDao categoryDao;
-    public ResponseEntity<List<ProductCategory>> getAllCategories() {
+    CategoryMapper categoryMapper;
 
-        try{
-            return new ResponseEntity<>(categoryDao.findAll(), HttpStatus.OK);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return new ResponseEntity<>(new ArrayList<>(),HttpStatus.BAD_REQUEST);
+    public CategoryService(CategoryDao categoryDao, CategoryMapper categoryMapper) {
+        this.categoryDao = categoryDao;
+        this.categoryMapper = categoryMapper;
     }
 
-    public ResponseEntity<ProductCategory> getCategoryById(Integer id) {
-        try{
-            return new ResponseEntity<>(categoryDao.findById(id).get(), HttpStatus.OK);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+    // Retrieve a list of all categories
+    public List<CategoryDto> getAllCategories() {
+        List<CategoryDto> categoryDtos = categoryMapper.transferToDto(categoryDao.findAll());
+        if (categoryDtos == null)
+            throw new CategoryNotFoundException("Couldn't retrieve categories");
+        return categoryDtos;
     }
+
+
+    // Retrieve a specific category by its id
+    public CategoryDto getCategoryById(Integer id) {
+        Optional<Category> category = categoryDao.findById(id);
+        if (category.isEmpty())
+            throw new CategoryNotFoundException("Couldn't find a category with " + id);
+        return categoryMapper.transferToDto(categoryDao.findById(id).orElse(null));
+    }
+
+    // Add a new category
+    public CategoryDto addCategory(CategoryDto categoryDto) {
+        Category category = new Category();
+        category.setName(categoryDto.name());
+        categoryDao.save(category);
+        return categoryMapper.transferToDto(category);
+    }
+
+    // Edit an already existing category
+    public CategoryDto editCategoryById(Integer id, CategoryDto categoryDto) {
+
+        Optional<Category> category = categoryDao.findById(id);
+        if (category.isEmpty())
+            throw new CategoryNotFoundException("Couldn't find a category with " + id);
+
+        Category editedCategory = category.get();
+        editedCategory.setId(id);
+        if (categoryDto.name() != null)
+            editedCategory.setName(categoryDto.name());
+
+        categoryDao.save(editedCategory);
+        return categoryMapper.transferToDto(editedCategory);
+
+    }
+
+    // Delete category by id
+    public void deleteCategoryById(Integer id) {
+        Optional<Category> category = categoryDao.findById(id);
+        if (category.isEmpty())
+            throw new CategoryNotFoundException("Couldn't find a category with " + id);
+
+        categoryDao.deleteById(id);
+    }
+
 }

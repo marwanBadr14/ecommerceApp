@@ -1,0 +1,22 @@
+[
+  {
+      "productId": 101,
+      "quantity": 2
+  },
+  {
+      "productId": 102,
+      "quantity": 1
+  },
+  {
+      "productId": 103,
+      "quantity": 1
+  },
+  {
+      "productId": 104,
+      "quantity": 1
+  },
+  {
+      "productId": 105,
+      "quantity": 1
+  }
+]

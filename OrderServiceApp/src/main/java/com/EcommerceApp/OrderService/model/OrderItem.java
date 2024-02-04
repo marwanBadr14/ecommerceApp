@@ -1,24 +1,25 @@
 package com.EcommerceApp.OrderService.model;
-import com.EcommerceApp.OrderService.key.OrderItemPK;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
 
 @Entity
 @Table(name = "order_items")
-@IdClass(OrderItemPK.class) // Specify the composite key class
-@Data
-@EqualsAndHashCode
+@Getter
+@Setter
 public class OrderItem {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_item_id")
+    private Integer orderItemId;
+
     @Column(name = "order_id")
     private Integer orderId;
 
-    @Id
     @Column(name = "product_id")
     private Integer productId;
 
@@ -28,12 +29,9 @@ public class OrderItem {
     @Column(name = "item_price", precision = 10, scale = 2, nullable = false)
     private BigDecimal itemPrice;
 
-
     @ManyToOne
-    @JsonIgnore
-    @JoinColumn(name = "order_id") // This references the "order_id" column in the order_items table
-    private Order order; // This establishes the relationship
-
+    @JoinColumn(name = "order_id", insertable=false, updatable=false)
+    private Order order;
 
     public OrderItem(int orderId, int productId, int quantity, BigDecimal itemPrice) {
         this.orderId = orderId;
@@ -45,4 +43,15 @@ public class OrderItem {
     public OrderItem() {
     }
 
+    @Override
+    public String toString() {
+        return "OrderItem{" +
+                "orderItemId=" + orderItemId +
+                ", orderId=" + orderId +
+                ", productId=" + productId +
+                ", quantity=" + quantity +
+                ", itemPrice=" + itemPrice +
+                ", order=" + order +
+                '}';
+    }
 }

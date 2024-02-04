@@ -21,7 +21,7 @@ public class LoginService {
 
     private final AuthenticationManager manager;
 
-    private final UserMapConvertor userMapConvertor = new UserMapConvertor();
+    private final UserMapConvertor userMapConvertor;
 
 
 
@@ -43,13 +43,18 @@ public class LoginService {
         Map<String, Object> claims = userMapConvertor.convertUserToMap(user);
 
         // generates an encoded JWT token for the created user with extra claims
-        var jwtToken = jwtService.generateToken(claims, user);
+        var jwtToken = jwtService.generateToken(claims, user.getUsername());
 
         // generates an encoded JWT token for the authenticated user
         // var jwtToken = jwtService.generateToken(user);
 
         // return the JWT token
-        return AuthenticationResponse.builder().token(jwtToken).build();
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .email(user.getEmail())
+                .role(user.getRole().toString().toLowerCase())
+                .id(user.getId())
+                .build();
     }
 
 

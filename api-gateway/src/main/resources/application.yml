@@ -1,0 +1,54 @@
+server:
+  port: 8765
+
+spring:
+  application:
+    name: API-GATEWAY
+  cloud:
+    gateway:
+      routes:
+        - id: purchasing-service
+          uri: lb://PURCHASING-SERVICE
+          predicates:
+            - Path=/purchases/**
+          filters:
+            - AuthenticationFilter
+
+        - id: inventory-service-inventory
+          uri: lb://INVENTORY-SERVICE
+          predicates:
+            - Path=/inventory/**
+          filters:
+            - AuthenticationFilter
+
+        - id: inventory-service-categories
+          uri: lb://INVENTORY-SERVICE
+          predicates:
+            - Path=/categories/**
+          filters:
+            - AuthenticationFilter
+
+        - id: inventory-service-products
+          uri: lb://INVENTORY-SERVICE
+          predicates:
+            - Path=/products/**
+          filters:
+            - AuthenticationFilter
+
+        - id: order-service
+          uri: lb://ORDER-SERVICE
+          predicates:
+            - Path=/order/**
+          filters:
+            - AuthenticationFilter
+
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+              - Path=/user/**
+          filters:
+            - AuthenticationFilter
+eureka:
+  client:
+    service-url:
+      defaultZone : http://localhost:8761/eureka/
