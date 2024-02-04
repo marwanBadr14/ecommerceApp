@@ -1,8 +1,9 @@
 package com.gizasystems.purchasingservice.service;
 
 import com.gizasystems.purchasingservice.dao.PurchaseRepository;
-import com.gizasystems.purchasingservice.dto.PurchaseDTO;
+import org.dto.PurchaseDTO;
 import com.gizasystems.purchasingservice.exception.PurchaseNotFoundException;
+import com.gizasystems.purchasingservice.helper.PurchaseMapper;
 import com.gizasystems.purchasingservice.model.Purchase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,7 @@ public class PurchaseServiceImpl implements PurchaseService {
 
     @Override
     public List<PurchaseDTO> findAll() {
-        List<PurchaseDTO> purchaseDTOS =  PurchaseDTO.from(purchaseRepository.findAll());
+        List<PurchaseDTO> purchaseDTOS = PurchaseMapper.convertFromEntityToDto(purchaseRepository.findAll());
         if (purchaseDTOS == null)
             throw new PurchaseNotFoundException("No purchases found");
         return purchaseDTOS;
@@ -24,7 +25,7 @@ public class PurchaseServiceImpl implements PurchaseService {
 
     @Override
     public PurchaseDTO findByProductId(Integer productId) {
-        PurchaseDTO purchaseDTO = PurchaseDTO.from(purchaseRepository.findByProductId(productId));
+        PurchaseDTO purchaseDTO = PurchaseMapper.convertFromEntityToDto(purchaseRepository.findByProductId(productId));
         if (purchaseDTO == null)
             throw new PurchaseNotFoundException("No purchase found with productId: " + productId);
         return purchaseDTO;
@@ -32,8 +33,8 @@ public class PurchaseServiceImpl implements PurchaseService {
 
     @Override
     public PurchaseDTO add(PurchaseDTO purchaseDTO) {
-        Purchase savedPurchase = purchaseRepository.save(Purchase.from(purchaseDTO));
-        return PurchaseDTO.from(savedPurchase);
+        Purchase savedPurchase = purchaseRepository.save(PurchaseMapper.convertFromDtoToEntity(purchaseDTO));
+        return PurchaseMapper.convertFromEntityToDto(savedPurchase);
     }
     @Override
     public PurchaseDTO update(PurchaseDTO purchaseDTO) {
@@ -45,7 +46,7 @@ public class PurchaseServiceImpl implements PurchaseService {
     public PurchaseDTO update(PurchaseDTO purchaseDTO, Purchase dbPurchase) {
         dbPurchase.increaseNumOfPurchases(purchaseDTO.quantity());
         Purchase savedPurchase = purchaseRepository.save(dbPurchase);
-        return PurchaseDTO.from(savedPurchase);
+        return PurchaseMapper.convertFromEntityToDto(savedPurchase);
     }
 
     @Override

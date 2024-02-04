@@ -1,6 +1,5 @@
 package com.EcommerceApp.OrderService.service;
 
-import com.EcommerceApp.OrderService.dto.OrderItemPK;
 import com.EcommerceApp.OrderService.dao.OrderItemDao;
 import com.EcommerceApp.OrderService.exception.*;
 import com.EcommerceApp.OrderService.feign.InventoryServiceClient;
@@ -10,7 +9,6 @@ import com.EcommerceApp.OrderService.model.OrderItem;
 
 import org.dto.OrderDTO;
 import org.dto.OrderItemDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -20,79 +18,48 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrderItemService {
-    // TODO: 11/14/2023 use constructor injection
-    @Autowired
-    private OrderItemDao orderItemDao;
+    private final OrderItemDao orderItemDao;
+    private final OrderItemMapper orderItemMapper;
+    private final OrderService orderService;
+    private final InventoryServiceClient inventoryServiceClient;
+    private final OrderMapper orderMapper;
 
-    @Autowired
-    private OrderItemMapper orderItemMapper;
-
-    @Autowired
-    private OrderService orderService;
-
-    @Autowired
-    InventoryServiceClient inventoryServiceClient;
-
-    @Autowired
-    private OrderMapper orderMapper;
-
-
-    public OrderItemDTO createOrderItem(OrderItem orderItem) {
-        OrderDTO order = orderService.findById(orderItem.getOrderId());
-        orderItem.setItemPrice(inventoryServiceClient.getProductPrice(orderItem.getProductId()).getBody());
-        order.setTotalAmount(order.getTotalAmount()
-                .add(orderItem.getItemPrice().multiply(BigDecimal.valueOf(orderItem.getQuantity()))));
-        orderService.save(orderMapper.convertToEntity(order));
-        inventoryServiceClient.deductFromStock(orderItem.getProductId(),orderItem.getQuantity());
-        OrderItem createdOrderItem = orderItemDao.save(orderItem);
-        return orderItemMapper.convertToDTO(createdOrderItem);
+    public OrderItemService(OrderItemDao orderItemDao, OrderItemMapper orderItemMapper, OrderService orderService, InventoryServiceClient inventoryServiceClient, OrderMapper orderMapper) {
+        this.orderItemDao = orderItemDao;
+        this.orderItemMapper = orderItemMapper;
+        this.orderService = orderService;
+        this.inventoryServiceClient = inventoryServiceClient;
+        this.orderMapper = orderMapper;
     }
 
 
-    public OrderItemDTO getOrderItemById(Integer orderId, Integer productId) {
-        // TODO: 11/14/2023 use more meaningfully variable name
-        OrderItemPK pk = new OrderItemPK();
-        pk.setOrderId(orderId);
-        pk.setProductId(productId);
-        Optional<OrderItem> orderItem = orderItemDao.findById(pk);
-        validatOrderId(orderId);
-        validatProductId(productId);
+
+    public OrderItemDTO getOrderItemById(Integer id) {
+        Optional<OrderItem> orderItem = orderItemDao.findById(id);
         if(orderItem.isPresent()){
             return orderItemMapper.convertToDTO(orderItem.get());
         }else {
-            throw new OrderItemNotFoundException("Order Item with order id: "+ orderId+ " and product id: "+ productId+"not found");
+            throw new OrderItemNotFoundException("Order Item with id: "+ id +" is not found");
         }
     }
 
-    public void deleteOrderItem(Integer orderId, Integer productId) {
-        // TODO: 11/14/2023 use more meaningfully variable name
-        OrderItemPK pk = new OrderItemPK();
-        pk.setOrderId(orderId);
-        pk.setProductId(productId);
-        validatOrderId(orderId);
-        validatProductId(productId);
-        //TODO:not found
-        orderItemDao.deleteById(pk);
+    public void deleteOrderItem(Integer id) {
+        Optional<OrderItem> orderItem = orderItemDao.findById(id);
+        if(orderItem.isPresent()){
+            orderItemDao.deleteById(id);
+        }else {
+            throw new OrderItemNotFoundException("Order Item with id: "+ id +" is not found");
+        }
     }
 
 
-    public OrderItemDTO updateOrderItem(Integer orderId, Integer productId, OrderItem updatedOrderItem) {
-        // TODO: 11/14/2023 use more meaningfully variable name
-        OrderItemPK pk = new OrderItemPK();
-        pk.setOrderId(orderId);
-        pk.setProductId(productId);
-        validatOrderId(orderId);
-        validatProductId(productId);
-        Optional<OrderItem> existingOrderItem = orderItemDao.findById(pk);
+    public OrderItemDTO updateOrderItem(Integer id ,OrderItem updatedOrderItem) {
+        Optional<OrderItem> existingOrderItem = orderItemDao.findById(id);
         if (existingOrderItem.isPresent()) {
-            if(!orderId.equals(updatedOrderItem.getOrderId()))
-                throw new OrderIdModificationException("Cannot Modify Order Id");
-            if(!productId.equals(updatedOrderItem.getProductId()))
-                throw new ProductIdModificationException("Cannot Modify Product Id");
             OrderItem orderItem = existingOrderItem.get();
             return orderItemMapper.convertToDTO(orderItemDao.save(orderItem));
         }else{
-            throw new OrderItemNotFoundException("Order Item with order id: "+ orderId+ " and product id: "+ productId+"not found");
+            throw new OrderItemNotFoundException("Order Item with id: "+ id +" is not found");
         }
     }
 

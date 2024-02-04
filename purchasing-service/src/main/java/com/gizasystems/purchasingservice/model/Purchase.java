@@ -1,6 +1,6 @@
 package com.gizasystems.purchasingservice.model;
 
-import com.gizasystems.purchasingservice.dto.PurchaseDTO;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -25,10 +25,6 @@ public class Purchase {
     public Purchase(Integer productId, Integer numOfPurchases) {
         this.productId = productId;
         this.numOfPurchases = numOfPurchases;
-    }
-
-    public static Purchase from(PurchaseDTO purchaseDTO) {
-        return new Purchase(purchaseDTO.productId(), purchaseDTO.quantity());
     }
 
     public void setProductId(Integer productId) {

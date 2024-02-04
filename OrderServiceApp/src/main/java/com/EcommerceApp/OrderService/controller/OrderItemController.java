@@ -1,11 +1,9 @@
 package com.EcommerceApp.OrderService.controller;
 
 import com.EcommerceApp.OrderService.exception.*;
-import com.EcommerceApp.OrderService.feign.InventoryServiceClient;
-import com.EcommerceApp.OrderService.model.OrderItem;
+import com.EcommerceApp.OrderService.mapper.OrderItemMapper;
 import com.EcommerceApp.OrderService.service.OrderItemService;
 import org.dto.OrderItemDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,24 +13,15 @@ import java.util.List;
 @RequestMapping("/order/items")
 public class OrderItemController {
 
-    @Autowired
-    private OrderItemService orderItemService;
 
-    @Autowired
-    InventoryServiceClient inventoryServiceClient;
+    private final OrderItemService orderItemService;
+    private final OrderItemMapper orderItemMapper;
 
-    // Create a new order item
-    @PostMapping
-    public ResponseEntity<OrderItemDTO> createOrderItem(@RequestBody OrderItem orderItem) {
-        try {
-            OrderItemDTO createdOrderItem = orderItemService.createOrderItem(orderItem);
-            return new ResponseEntity<>(createdOrderItem, HttpStatus.CREATED);
-        } catch (OrderNotFoundException e){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public OrderItemController(OrderItemService orderItemService, OrderItemMapper orderItemMapper) {
+        this.orderItemService = orderItemService;
+        this.orderItemMapper = orderItemMapper;
     }
+
 
     @GetMapping("/{orderId}")
     public ResponseEntity<List<OrderItemDTO>> getOrderItems(@PathVariable Integer orderId) {
@@ -47,10 +36,10 @@ public class OrderItemController {
         }
     }
 
-    @GetMapping("/{orderId}/{productId}")
-    public ResponseEntity<OrderItemDTO> getOrderItem(@PathVariable Integer orderId, @PathVariable Integer productId) {
+    @GetMapping("/{id}")
+    public ResponseEntity<OrderItemDTO> getOrderItem(@PathVariable Integer id) {
         try {
-            OrderItemDTO orderItemDTO = orderItemService.getOrderItemById(orderId, productId);
+            OrderItemDTO orderItemDTO = orderItemService.getOrderItemById(id);
             return new ResponseEntity<>(orderItemDTO, HttpStatus.OK);
         }catch (InvalidOrderIdException | InvalidProductIdException e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -63,10 +52,10 @@ public class OrderItemController {
     }
 
     // Update an order item
-    @PutMapping("/{orderId}/{productId}")
-    public ResponseEntity<OrderItemDTO> updateOrderItem(@PathVariable Integer orderId, @PathVariable Integer productId, @RequestBody OrderItem orderItem) {
+    @PutMapping("/{id}")
+    public ResponseEntity<OrderItemDTO> updateOrderItem(@PathVariable Integer id, @RequestBody OrderItemDTO orderItemDTO) {
         try {
-            OrderItemDTO updatedOrderItem = orderItemService.updateOrderItem(orderId, productId, orderItem);
+            OrderItemDTO updatedOrderItem = orderItemService.updateOrderItem(id, orderItemMapper.convertToEntity(orderItemDTO));
             return new ResponseEntity<>(updatedOrderItem, HttpStatus.OK);
         } catch (InvalidOrderIdException | InvalidProductIdException | OrderIdModificationException | ProductIdModificationException e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -78,10 +67,10 @@ public class OrderItemController {
     }
 
     // Delete an order item by ID
-    @DeleteMapping("/{orderId}/{productId}")
-    public ResponseEntity<String> deleteOrderItem(@PathVariable Integer orderId, @PathVariable Integer productId) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteOrderItem(@PathVariable Integer id) {
         try {
-            orderItemService.deleteOrderItem(orderId, productId);
+            orderItemService.deleteOrderItem(id);
             return new ResponseEntity<>("Order item deleted successfully", HttpStatus.NO_CONTENT);
         } catch (OrderItemNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);

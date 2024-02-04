@@ -1,7 +1,5 @@
 package com.EcommerceApp.OrderService.mapper;
 
-//import com.EcommerceApp.OrderService.dto.OrderItemDTO;
-import com.EcommerceApp.OrderService.model.Order;
 import com.EcommerceApp.OrderService.model.OrderItem;
 import org.dto.OrderItemDTO;
 import org.springframework.stereotype.Component;
@@ -14,6 +12,7 @@ import java.util.stream.Collectors;
 public class OrderItemMapper {
     public OrderItemDTO convertToDTO(OrderItem orderItem) {
         return new OrderItemDTO(
+                orderItem.getOrderItemId(),
                 orderItem.getOrderId(),
                 orderItem.getProductId(),
                 orderItem.getQuantity(),
@@ -22,6 +21,9 @@ public class OrderItemMapper {
     }
 
     public OrderItem convertToEntity(OrderItemDTO orderItemDTO) {
+        if (orderItemDTO == null)
+            return null;
+
         OrderItem orderItem = new OrderItem();
         orderItem.setOrderId(orderItemDTO.getOrderId());
         orderItem.setProductId(orderItemDTO.getProductId());

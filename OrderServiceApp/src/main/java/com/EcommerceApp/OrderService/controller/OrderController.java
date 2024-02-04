@@ -6,13 +6,11 @@ import com.EcommerceApp.OrderService.exception.InvalidOrderIdException;
 import com.EcommerceApp.OrderService.kafka.OrderProducer;
 import com.EcommerceApp.OrderService.exception.OrderNotFoundException;
 import com.EcommerceApp.OrderService.feign.PurchaseServiceIClient;
-import com.EcommerceApp.OrderService.model.Order;
-import com.EcommerceApp.OrderService.Status;
+import com.EcommerceApp.OrderService.mapper.OrderMapper;
 import com.EcommerceApp.OrderService.service.OrderService;
-import jakarta.ws.rs.POST;
+
 import org.dto.OrderDTO;
 import org.dto.OrderItemDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,18 +26,19 @@ public class OrderController {
     OrderService orderService;
     PurchaseServiceIClient purchaseServiceIClient;
     OrderProducer orderProducer;
+    OrderMapper orderMapper;
 
-    public OrderController(OrderService orderService, PurchaseServiceIClient purchaseServiceIClient, OrderProducer orderProducer) {
+    public OrderController(OrderService orderService, PurchaseServiceIClient purchaseServiceIClient, OrderProducer orderProducer, OrderMapper orderMapper) {
         this.orderService = orderService;
         this.purchaseServiceIClient = purchaseServiceIClient;
         this.orderProducer = orderProducer;
+        this.orderMapper = orderMapper;
     }
 
     @PostMapping("/create")
-    // TODO: 11/14/2023 dont take entity as input
-    public ResponseEntity<OrderDTO> createOrder(@RequestBody Order order) {
+    public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) {
         try {
-            OrderDTO createdOrder = orderService.save(order);
+            OrderDTO createdOrder = orderService.save(orderMapper.convertToEntity(orderDTO));
             return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -74,10 +73,9 @@ public class OrderController {
 
     // Update an existing order
     @PutMapping("/{orderId}")
-    // TODO: 11/14/2023 dont take entity as input
-    public ResponseEntity<OrderDTO> updateOrder(@PathVariable int orderId, @RequestBody Order updatedOrder) {
+    public ResponseEntity<OrderDTO> updateOrder(@PathVariable int orderId, @RequestBody OrderDTO updatedOrder) {
         try{
-            OrderDTO updated = orderService.update(orderId,updatedOrder);
+            OrderDTO updated = orderService.update(orderId,orderMapper.convertToEntity(updatedOrder));
             return new ResponseEntity<>(updated, HttpStatus.OK);
         }
         catch (InvalidOrderIdException e){
@@ -116,15 +114,15 @@ public class OrderController {
     }
 
     // Get orders by order status
-    @GetMapping("/status/{orderStatus}")
-    public ResponseEntity<List<OrderDTO>> getOrdersByStatus(@PathVariable Status orderStatus) {
-        try {
-            List<OrderDTO> orders = orderService.findByOrderStatus(orderStatus);
-            return new ResponseEntity<>(orders, HttpStatus.OK);
-        }catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+//    @GetMapping("/status/{orderStatus}")
+//    public ResponseEntity<List<OrderDTO>> getOrdersByStatus(@PathVariable Status orderStatus) {
+//        try {
+//            List<OrderDTO> orders = orderService.findByOrderStatus(orderStatus);
+//            return new ResponseEntity<>(orders, HttpStatus.OK);
+//        }catch (Exception e){
+//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
     // Get orders with a total amount greater than a specified value
     @GetMapping("/totalAmountGreaterThan/{amount}")
@@ -138,35 +136,22 @@ public class OrderController {
     }
 
     // Get orders within a date range
-//    @GetMapping("/dateRange")
-//    public ResponseEntity<List<OrderDTO>> getOrdersWithinDateRange(
-//            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime startDate,
-//            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime endDate
-//    ) {
-//        try {
-//            List<OrderDTO> orders = orderService.findByOrderDateBetween(startDate, endDate);
-//            return new ResponseEntity<>(orders, HttpStatus.OK);
-//        }catch (InvalidDateRangeException e){
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//        }
-//        catch (Exception e){
-//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-
-    @GetMapping("/{orderId}/execute")
-    public ResponseEntity<List<OrderItemDTO>> executeOrder(@PathVariable int orderId) {
-        try{
-            List<OrderItemDTO> orderItemDTOS =  orderService.executeOrder(orderId);
-            return new ResponseEntity<>(orderItemDTOS, HttpStatus.OK);
-        }catch (InvalidOrderIdException e){
+    @GetMapping("/dateRange")
+    public ResponseEntity<List<OrderDTO>> getOrdersWithinDateRange(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime endDate
+    ) {
+        try {
+            List<OrderDTO> orders = orderService.findByOrderDateBetween(startDate, endDate);
+            return new ResponseEntity<>(orders, HttpStatus.OK);
+        }catch (InvalidDateRangeException e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }catch (OrderNotFoundException e){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }catch (Exception e){
+        }
+        catch (Exception e){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
 
     @PostMapping("/submit")

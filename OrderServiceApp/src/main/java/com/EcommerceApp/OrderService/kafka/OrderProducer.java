@@ -1,9 +1,8 @@
 package com.EcommerceApp.OrderService.kafka;
 
 import com.EcommerceApp.OrderService.feign.InventoryServiceClient;
-import com.EcommerceApp.OrderService.model.Order;
 import org.apache.kafka.clients.admin.NewTopic;
-
+import org.dto.OrderDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,21 +20,21 @@ public class OrderProducer {
     InventoryServiceClient inventoryServiceClient;
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderProducer.class);
 
-    private NewTopic topic;
-    private KafkaTemplate<String, Order> kafkaTemplate;
+    private final NewTopic topic;
+    private final KafkaTemplate<String, OrderDTO> kafkaTemplate;
 
 
-    public OrderProducer(NewTopic topic, KafkaTemplate<String, Order> kafkaTemplate) {
+    public OrderProducer(NewTopic topic, KafkaTemplate<String, OrderDTO> kafkaTemplate) {
         this.topic = topic;
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public void sendMessage(Order order){
-        LOGGER.info(String.format("Order event => %s", order.toString()));
+    public void sendMessage(OrderDTO orderDTO){
+        LOGGER.info(String.format("Order event => %s", orderDTO.toString()));
 
         // create message
-        Message<Order> message = MessageBuilder
-                .withPayload(order)
+        Message<OrderDTO> message = MessageBuilder
+                .withPayload(orderDTO)
                 .setHeader(KafkaHeaders.TOPIC,topic.name())
                 .build();
         kafkaTemplate.send(message);
