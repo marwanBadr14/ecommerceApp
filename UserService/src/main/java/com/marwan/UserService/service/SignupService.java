@@ -1,5 +1,6 @@
 package com.marwan.UserService.service;
 
+import com.marwan.UserService.exceptions.EmailAlreadyExistsException;
 import com.marwan.UserService.helper.UserMapConvertor;
 import com.marwan.UserService.repository.Role;
 import com.marwan.UserService.repository.User;
@@ -7,14 +8,18 @@ import com.marwan.UserService.repository.UserRepository;
 import com.marwan.UserService.reqres.AuthenticationResponse;
 import com.marwan.UserService.reqres.RegisterRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
+
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SignupService {
 
     private final UserRepository userRepository;
@@ -24,34 +29,50 @@ public class SignupService {
 
     private final UserMapConvertor userMapConvertor;
 
-    public Object register(RegisterRequest request) throws IllegalAccessException {
+    private static final String EMAIL_ALREADY_EXISTS_EXCEPTION_MESSAGE = "An account with this email already exists";
 
-        // builds a User object using HTTP request body
-        var user = User.builder()
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.CUSTOMER)
-                .build();
+    public Object register(RegisterRequest request) throws IllegalAccessException, RuntimeException {
 
-        // adds user to database
-        userRepository.save(user);
+        try {
+            if(!isRegisterRequestValid(request)){
+                throw new EmailAlreadyExistsException(
+                        EMAIL_ALREADY_EXISTS_EXCEPTION_MESSAGE, request.getEmail()
+                );
+            }
 
-        // create a map to generate JWT token
-        Map<String, Object> claims = userMapConvertor.convertUserToMap(user);
+            // builds a User object using HTTP request body
+            var user = User.builder()
+                    .firstName(request.getFirstName())
+                    .lastName(request.getLastName())
+                    .email(request.getEmail())
+                    .password(passwordEncoder.encode(request.getPassword()))
+                    .role(Role.CUSTOMER)
+                    .build();
 
-        // generates an encoded JWT token for the created user with extra claims
-        var jwtToken = jwtService.generateToken(claims, user.getUsername());
+            // adds user to database
+            userRepository.save(user);
 
-        // generates an encoded JWT token for the created user with no extra claims
-        //var jwtToken = jwtService.generateToken(user);
+            // create a map to generate JWT token
+            Map<String, Object> claims = userMapConvertor.convertUserToMap(user);
 
-        // returns the JWT token
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .email(user.getEmail())
-                .role(user.getRole().toString())
-                .build();
+            // generates an encoded JWT token for the created user with extra claims
+            var jwtToken = jwtService.generateToken(claims, user.getUsername());
+
+
+            // returns the JWT token
+            return AuthenticationResponse.builder()
+                    .token(jwtToken)
+                    .email(user.getEmail())
+                    .role(user.getRole().toString())
+                    .build();
+        }
+        catch (EmailAlreadyExistsException emailAlreadyExistsException){
+            log.error("ERROR OCCURRED DURING USER REGISTRATION", emailAlreadyExistsException);
+            return new ResponseEntity<String>(emailAlreadyExistsException.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private boolean isRegisterRequestValid(RegisterRequest request) {
+        return userRepository.findByEmail(request.getEmail()).isEmpty();
     }
 }
