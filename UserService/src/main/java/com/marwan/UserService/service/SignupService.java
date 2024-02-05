@@ -9,6 +9,7 @@ import com.marwan.UserService.reqres.AuthenticationResponse;
 import com.marwan.UserService.reqres.RegisterRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,7 +30,8 @@ public class SignupService {
 
     private final UserMapConvertor userMapConvertor;
 
-    private static final String EMAIL_ALREADY_EXISTS_EXCEPTION_MESSAGE = "An account with this email already exists";
+    @Value("${EMAIL_ALREADY_EXISTS_EXCEPTION_MESSAGE}")
+    private String EMAIL_ALREADY_EXISTS_EXCEPTION_MESSAGE;
 
     public Object register(RegisterRequest request) throws IllegalAccessException, RuntimeException {
 

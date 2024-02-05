@@ -7,6 +7,7 @@ import com.marwan.UserService.reqres.AuthenticationRequest;
 import com.marwan.UserService.reqres.AuthenticationResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,7 +29,8 @@ public class LoginService {
 
     private final UserMapConvertor userMapConvertor;
 
-    private static final String WRONG_CREDENTIAL_EXCEPTION_MESSAGE = "You have entered an incorrect email or password";
+    @Value("${WRONG_CREDENTIAL_EXCEPTION_MESSAGE}")
+    private String WRONG_CREDENTIAL_EXCEPTION_MESSAGE;
 
 
     public Object authenticate(AuthenticationRequest request) throws IllegalAccessException, RuntimeException {

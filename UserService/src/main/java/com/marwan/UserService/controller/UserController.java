@@ -16,13 +16,9 @@ public class UserController {
 
     private final UserService userService;
 
-    //@PreAuthorize("hasAuthority(T(com.marwan.UserService.repository.Role).MANAGER)")
     @PostMapping("/add-admin")
     public ResponseEntity<String> addAdmin(@RequestBody UserDTO userDTO) {
-
-        userService.addAdmin(userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail(), userDTO.getPassword());
-
-        return ResponseEntity.ok("Admin was added successfully");
+       return userService.addAdmin(userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail(), userDTO.getPassword());
     }
 
     @DeleteMapping("/delete-admin")
@@ -57,8 +53,8 @@ public class UserController {
         }
     }
     @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable Integer id) {
-        return ResponseEntity.ok(userService.getUserById(id));
+    public ResponseEntity getUserById(@PathVariable Integer id) {
+        return userService.getUserById(id);
     }
     @GetMapping("/all")
     public ResponseEntity<List<UserDTO>> getAllUsers() {
