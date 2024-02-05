@@ -1,0 +1,15 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="ellet (generated)" id="1707152504996-1">
+        <createTable tableName="purchase">
+            <column autoIncrement="true" name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="purchase_pkey"/>
+            </column>
+            <column name="num_of_purchases" type="INTEGER"/>
+            <column name="product_id" type="INTEGER"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ellet (generated)" id="1707152504996-2">
+        <addUniqueConstraint columnNames="product_id" constraintName="uk_qg9e0mm2k8k0r2fnw7pqsbpmj" tableName="purchase"/>
+    </changeSet>
+</databaseChangeLog>
