@@ -10,6 +10,7 @@ import com.EcommerceApp.OrderService.mapper.OrderMapper;
 import com.EcommerceApp.OrderService.model.Order;
 import com.EcommerceApp.OrderService.Status;
 import com.EcommerceApp.OrderService.dao.OrderDao;
+import com.EcommerceApp.OrderService.validator.IdValidators;
 import org.dto.OrderDTO;
 import org.dto.OrderItemDTO;
 import org.dto.PurchaseDTO;
@@ -30,8 +31,9 @@ public class OrderService {
     PurchaseServiceIClient purchaseServiceIClient;
     OrderProducer orderProducer;
     OrderItemMapper orderItemMapper;
+    IdValidators idValidators;
 
-    public OrderService(OrderDao orderDao, OrderItemDao orderItemDao, InventoryServiceClient inventoryServiceClient, OrderMapper orderMapper, PurchaseServiceIClient purchaseServiceIClient, OrderProducer orderProducer, OrderItemMapper orderItemMapper) {
+    public OrderService(OrderDao orderDao, OrderItemDao orderItemDao, InventoryServiceClient inventoryServiceClient, OrderMapper orderMapper, PurchaseServiceIClient purchaseServiceIClient, OrderProducer orderProducer, OrderItemMapper orderItemMapper, IdValidators idValidators) {
         this.orderDao = orderDao;
         this.orderItemDao = orderItemDao;
         this.inventoryServiceClient = inventoryServiceClient;
@@ -39,6 +41,7 @@ public class OrderService {
         this.purchaseServiceIClient = purchaseServiceIClient;
         this.orderProducer = orderProducer;
         this.orderItemMapper = orderItemMapper;
+        this.idValidators = idValidators;
     }
 
     public OrderDTO save(Order order) {
@@ -50,32 +53,28 @@ public class OrderService {
     }
 
     public OrderDTO findById(int orderId) {
-        validateOrderId(orderId);
+        idValidators.validateOrderId(orderId);
         Optional<Order> order = orderDao.findById(orderId);
         if(order.isPresent()) {
             return orderMapper.convertToDTO(order.get());
         }else {
-            throw new OrderNotFoundException("Order with order id: "+ orderId+" not found");
+            throw new OrderNotFoundException(orderId);
         }
     }
 
     public void deleteById(int orderId) {
-        validateOrderId(orderId);
+        idValidators.validateOrderId(orderId);
         if(existsById(orderId)) {
             orderDao.deleteById(orderId);
         }else{
-            throw new OrderNotFoundException("Order with order id: "+ orderId+" is not found");
+            throw new OrderNotFoundException(orderId);
         }
     }
 
     public List<OrderDTO> findByCustomerId(int customerId) {
-        validateCustomerId(customerId);
+        idValidators.validateCustomerId(customerId);
         return orderDao.findByCustomerId(customerId).stream().map(orderMapper::convertToDTO).collect(Collectors.toList());
     }
-
-//    public List<OrderDTO> findByOrderStatus(Status orderStatus) {
-//        return orderDao.findByOrderStatus(orderStatus).stream().map(orderMapper::convertToDTO).collect(Collectors.toList());
-//    }
 
     public List<OrderDTO> findByTotalAmountGreaterThan(BigDecimal amount) {
         return orderDao.findByTotalAmountGreaterThan(amount).stream().map(orderMapper::convertToDTO).collect(Collectors.toList());
@@ -83,7 +82,7 @@ public class OrderService {
 
     public List<OrderDTO> findByOrderDateBetween(LocalDateTime startDate, LocalDateTime endDate) {
         if(startDate.isAfter(endDate)){
-            throw new InvalidDateRangeException("Invalid date range: Start date must be on or before the end date.");
+            throw new InvalidDateRangeException();
         }
         return orderDao.findByOrderDateBetween(startDate,endDate).stream().map(orderMapper::convertToDTO).collect(Collectors.toList());
     }
@@ -92,55 +91,52 @@ public class OrderService {
         return orderDao.existsById(orderId);
     }
 
-    private void validateOrderId(Integer orderId){
-        if(orderId <= 0) throw new InvalidOrderIdException("Order id is Invalid");
-    }
 
-    private void validateCustomerId(Integer customerId){
-        if(customerId <= 0) throw new InvalidCustomerIdException("Customer id is Invalid");
-    }
 
 
     public OrderDTO update(int orderId, Order updatedOrder) {
+        if(!existsById(orderId))
+            throw new OrderNotFoundException(orderId);
+
         OrderDTO orderDTO = findById(orderId);
         Order order = orderMapper.convertToEntity(orderDTO);
-//        if(updatedOrder.getOrderStatus()!=null)order.setOrderStatus(updatedOrder.getOrderStatus());
-        if(updatedOrder.getOrderItems()!=null)order.setOrderItems(updatedOrder.getOrderItems());
-        if(updatedOrder.getTotalAmount()!=null)order.setTotalAmount(updatedOrder.getTotalAmount());
+        if(updatedOrder.getOrderItems()!=null)
+            order.setOrderItems(updatedOrder.getOrderItems());
+        if(updatedOrder.getTotalAmount()!=null)
+            order.setTotalAmount(updatedOrder.getTotalAmount());
         save(order);
         return orderMapper.convertToDTO(order);
     }
 
     public List<OrderItemDTO> submitOrder(List<OrderItemDTO> orderItemDTOS){
         Integer orderId = orderItemDTOS.get(0).getOrderId();
-        if(existsById(orderId)) {
-            OrderDTO orderDto = findById(orderId);
-            List<OrderItemDTO> purchasedProducts = new ArrayList<>();
-            List<PurchaseDTO> purchaseDTOS = new ArrayList<>();
-            BigDecimal totalAmount = BigDecimal.valueOf(0.0);
-            for (OrderItemDTO orderItemDTO : orderItemDTOS) {
-                if (Boolean.TRUE.equals((inventoryServiceClient.deductFromStock(orderItemDTO.getProductId(), orderItemDTO.getQuantity())).getBody())) {
-                    purchasedProducts.add(orderItemDTO);
-                    orderItemDTO.setItemPrice(inventoryServiceClient.getProductPrice(orderItemDTO.getProductId()).getBody());
-                    purchaseDTOS.add(new PurchaseDTO(orderItemDTO.getProductId(), orderItemDTO.getQuantity()));
-                    totalAmount = totalAmount.add(orderItemDTO.getItemPrice().multiply(BigDecimal.valueOf(orderItemDTO.getQuantity())));
-                }
-            }
+        if(!existsById(orderId))
+            throw new OrderNotFoundException(orderId);
 
-            orderDto.setOrderItems(purchasedProducts);
-            orderDto.setTotalAmount(totalAmount);
-            orderDao.save(orderMapper.convertToEntity(orderDto));
+        OrderDTO orderDto = findById(orderId);
+        List<OrderItemDTO> purchasedProducts = new ArrayList<>();
+        List<PurchaseDTO> purchaseDTOS = new ArrayList<>();
+        BigDecimal totalAmount = BigDecimal.valueOf(0.0);
+        for (OrderItemDTO orderItemDTO : orderItemDTOS) {
+            if (Boolean.TRUE.equals((inventoryServiceClient.deductFromStock(orderItemDTO.getProductId(), orderItemDTO.getQuantity())).getBody())) {
+                purchasedProducts.add(orderItemDTO);
+                orderItemDTO.setItemPrice(inventoryServiceClient.getProductPrice(orderItemDTO.getProductId()).getBody());
+                purchaseDTOS.add(new PurchaseDTO(orderItemDTO.getProductId(), orderItemDTO.getQuantity()));
+                totalAmount = totalAmount.add(orderItemDTO.getItemPrice().multiply(BigDecimal.valueOf(orderItemDTO.getQuantity())));
+            }
+        }
+
+        orderDto.setOrderItems(purchasedProducts);
+        orderDto.setTotalAmount(totalAmount);
+        orderDao.save(orderMapper.convertToEntity(orderDto));
 
 
         purchaseServiceIClient.processPurchasesRequest(purchaseDTOS);
         orderProducer.sendMessage(orderDto);
 
         return purchasedProducts;
+
         }
-
-        throw new OrderNotFoundException("Order with ID " + orderId + " not found");
-
-    }
 
 
 

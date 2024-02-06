@@ -13,8 +13,6 @@ import java.util.List;
 public interface OrderDao extends JpaRepository<Order, Integer> {
     List<Order> findByCustomerId(int customerId);
 
-//    List<Order> findByOrderStatus(Status orderStatus);
-
     List<Order> findByTotalAmountGreaterThan(BigDecimal amount);
 
      List<Order> findByOrderDateBetween(LocalDateTime orderDate, LocalDateTime orderDate2);

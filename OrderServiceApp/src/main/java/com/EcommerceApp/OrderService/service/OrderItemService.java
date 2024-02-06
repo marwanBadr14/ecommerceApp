@@ -7,11 +7,10 @@ import com.EcommerceApp.OrderService.mapper.OrderItemMapper;
 import com.EcommerceApp.OrderService.mapper.OrderMapper;
 import com.EcommerceApp.OrderService.model.OrderItem;
 
-import org.dto.OrderDTO;
+import com.EcommerceApp.OrderService.validator.IdValidators;
 import org.dto.OrderItemDTO;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,13 +22,15 @@ public class OrderItemService {
     private final OrderService orderService;
     private final InventoryServiceClient inventoryServiceClient;
     private final OrderMapper orderMapper;
+    private final IdValidators idValidators;
 
-    public OrderItemService(OrderItemDao orderItemDao, OrderItemMapper orderItemMapper, OrderService orderService, InventoryServiceClient inventoryServiceClient, OrderMapper orderMapper) {
+    public OrderItemService(OrderItemDao orderItemDao, OrderItemMapper orderItemMapper, OrderService orderService, InventoryServiceClient inventoryServiceClient, OrderMapper orderMapper, IdValidators idValidators) {
         this.orderItemDao = orderItemDao;
         this.orderItemMapper = orderItemMapper;
         this.orderService = orderService;
         this.inventoryServiceClient = inventoryServiceClient;
         this.orderMapper = orderMapper;
+        this.idValidators = idValidators;
     }
 
 
@@ -39,7 +40,7 @@ public class OrderItemService {
         if(orderItem.isPresent()){
             return orderItemMapper.convertToDTO(orderItem.get());
         }else {
-            throw new OrderItemNotFoundException("Order Item with id: "+ id +" is not found");
+            throw new OrderItemNotFoundException(id);
         }
     }
 
@@ -48,7 +49,7 @@ public class OrderItemService {
         if(orderItem.isPresent()){
             orderItemDao.deleteById(id);
         }else {
-            throw new OrderItemNotFoundException("Order Item with id: "+ id +" is not found");
+            throw new OrderItemNotFoundException(id);
         }
     }
 
@@ -59,21 +60,13 @@ public class OrderItemService {
             OrderItem orderItem = existingOrderItem.get();
             return orderItemMapper.convertToDTO(orderItemDao.save(orderItem));
         }else{
-            throw new OrderItemNotFoundException("Order Item with id: "+ id +" is not found");
+            throw new OrderItemNotFoundException(id);
         }
     }
 
     public List<OrderItemDTO> findByOrderId(Integer orderId) {
-        validatOrderId(orderId);
+        idValidators.validateOrderId(orderId);
         List<OrderItem> orderItemList = orderItemDao.findByOrderId(orderId);
         return orderItemList.stream().map(orderItemMapper::convertToDTO).collect(Collectors.toList());
-    }
-
-    // TODO: 11/14/2023 move them to a validation class better design
-    private void validatOrderId(Integer orderId){
-        if(orderId <= 0) throw new InvalidOrderIdException("Order id is Invalid");
-    }
-    private void validatProductId(Integer productId){
-        if(productId <= 0) throw new InvalidOrderIdException("Product id is Invalid");
     }
 }
