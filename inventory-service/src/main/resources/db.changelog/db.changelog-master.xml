@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+
+    <changeSet id="createCategoryTable" author="mariam">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="product_categories"/>
+            </not>
+        </preConditions>
+        <createTable tableName="product_categories">
+            <column name="category_id" type="INTEGER" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="category_name" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+
+    <changeSet id="createProductTable" author="mariam">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="products"/>
+            </not>
+        </preConditions>
+        <createTable tableName="products">
+            <column name="product_id" type="INTEGER" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="product_name" type="VARCHAR(255)"/>
+            <column name="product_description" type="VARCHAR(255)"/>
+            <column name="category_id" type="INTEGER"/>
+            <column name="product_price" type="DECIMAL(10, 2)"/>
+            <column name="product_quantity" type="INTEGER"/>
+            <column name="product_image" type="VARCHAR(255)"/>
+        </createTable>
+
+        <!-- Add foreign key constraint for the relationship -->
+        <addForeignKeyConstraint baseTableName="products" baseColumnNames="category_id"
+                                 constraintName="fk_products_category"
+                                 referencedTableName="product_categories" referencedColumnNames="category_id"/>
+    </changeSet>
+
+
+    <changeSet id="createProductCategoryTable" author="mariam">
+        <createTable tableName="category_products_id">
+            <column name="category_category_id" type="INTEGER">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="products_id" type="INTEGER">
+                <constraints primaryKey="true"/>
+            </column>
+
+        </createTable>
+            <addForeignKeyConstraint baseTableName="product_categories" baseColumnNames="category_id"
+                                     constraintName="fk_product_category_category"
+                                     referencedTableName="product_categories" referencedColumnNames="category_id"/>
+            <addForeignKeyConstraint baseTableName="products" baseColumnNames="product_id"
+                                     constraintName="fk_product_category_product"
+                                     referencedTableName="products" referencedColumnNames="product_id"/>
+
+
+    </changeSet>
+</databaseChangeLog>
