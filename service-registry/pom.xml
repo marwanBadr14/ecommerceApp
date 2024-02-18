@@ -3,10 +3,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.1.5</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<groupId>com.marwan</groupId>
+		<artifactId>ecommerce-main-app</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../ecommerce-main-app</relativePath> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.gizasystems</groupId>
 	<artifactId>service-registry</artifactId>
@@ -25,6 +25,12 @@
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<version>3.2.1</version>
 		</dependency>
 
 		<dependency>
